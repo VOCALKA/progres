@@ -1,3 +1,6 @@
+import custom.Custom;
+import custom.RoundedButton;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,23 +18,26 @@ public class TitleScreen {
         this.frame.setLayout(new BorderLayout());
         this.frame.setLocationRelativeTo(null);
 
+
+        Custom.background(frame);
+
         JLabel label = new JLabel("PROGRES", JLabel.CENTER);
         Custom.startText(label);
         this.frame.add(label, BorderLayout.CENTER);
 
-        /*JButton button = new JButton("Spustit");
-        CustomButton.startButton(button);
-        this.frame.add(button, BorderLayout.SOUTH);*/
+        RoundedButton button = new RoundedButton("LOG IN");
+        Custom.startButton(button);
+        this.frame.add(button, BorderLayout.SOUTH);
 
         /*JButton settings = new JButton("Nastaveni");
         CustomButton.settingsButton(button);
         this.frame.add(settings, BorderLayout.EAST);*/
 
-        /*button.addActionListener(e -> {
+        button.addActionListener(e -> {
             this.frame.dispose();
-            //new App().showApp();
-            new LoadingScreen().show();
-        });*/
+            new App().showApp();
+            //new LoadingScreen().show();
+        });
 
         /*settings.addActionListener(e -> {
             SettingsDialog dialog = new SettingsDialog(this.frame);
