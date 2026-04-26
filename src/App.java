@@ -1,3 +1,8 @@
+import custom.Custom;
+import custom.RoundedButton;
+import loading.LoadingScreen;
+import profile.Profile;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,6 +18,16 @@ public class App {
         this.frame.setLayout(new BorderLayout());
         this.frame.setLocationRelativeTo(null);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        RoundedButton button = new RoundedButton("PROFILE");
+        Custom.startButton(button);
+        this.frame.add(button, BorderLayout.SOUTH);
+
+        button.addActionListener(e -> {
+            this.frame.dispose();
+            new LoadingScreen().show();
+            //new LoadingScreen().show();
+        });
 
         this.frame.setVisible(true);
     }
