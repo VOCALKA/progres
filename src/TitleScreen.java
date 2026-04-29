@@ -33,11 +33,20 @@ public class TitleScreen {
         CustomButton.settingsButton(button);
         this.frame.add(settings, BorderLayout.EAST);*/
 
-        button.addActionListener(e -> {
+        //
+         //
+        /*button.addActionListener(e -> {
             this.frame.dispose();
             new App().showApp();
             //new LoadingScreen().show();
+        });*/
+        //
+         //
+        button.addActionListener(e -> {
+            this.frame.dispose();
+            new Login().setVisible(true);
         });
+
 
         /*settings.addActionListener(e -> {
             SettingsDialog dialog = new SettingsDialog(this.frame);
