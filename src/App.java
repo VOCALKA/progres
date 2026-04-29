@@ -5,9 +5,14 @@ import profile.Profile;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 
 public class App {
     private JFrame frame;
+    private JLabel casLabel;
 
     public App() {
         this.frame = new JFrame("APP!");
@@ -28,7 +33,25 @@ public class App {
             new LoadingScreen().show();
             //new LoadingScreen().show();
         });
+        clock();
 
         this.frame.setVisible(true);
+    }
+
+    public void clock(){
+        casLabel = new JLabel("", SwingConstants.CENTER);
+        casLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        this.frame.add(casLabel, BorderLayout.NORTH);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d. MMMM yyyy HH:mm:ss",
+                new Locale("cs", "CZ"));
+
+        Timer timer = new Timer(1000, e -> {
+            casLabel.setText(LocalDateTime.now().format(formatter));
+        });
+
+        timer.start();
+
+        casLabel.setText(LocalDateTime.now().format(formatter));
     }
 }
