@@ -37,7 +37,7 @@ public class TitleScreen {
          //
         /*button.addActionListener(e -> {
             this.frame.dispose();
-            new App().showApp();
+            new app.App().showApp();
             //new LoadingScreen().show();
         });*/
         //

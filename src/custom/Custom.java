@@ -10,8 +10,8 @@ public class Custom {
         button.setFont(new Font("SansSerif", Font.BOLD, 20));
         button.setForeground(new Color(255, 255, 255));
 
-        //button.setFocusPainted(false);
-        //button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
     }
     /*public static void settingsButton(JButton button){
         button.setBackground(new Color(149, 204, 152));

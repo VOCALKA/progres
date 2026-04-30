@@ -1,7 +1,9 @@
+package app;
+
 import custom.Custom;
 import custom.RoundedButton;
 import loading.LoadingScreen;
-import profile.Profile;
+import timer.GymTimer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,16 +26,33 @@ public class App {
         this.frame.setLocationRelativeTo(null);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+        buttonPanel.setOpaque(false);
+
         RoundedButton button = new RoundedButton("PROFILE");
         Custom.startButton(button);
-        this.frame.add(button, BorderLayout.SOUTH);
+        //this.frame.add(button, BorderLayout.SOUTH);
 
         button.addActionListener(e -> {
             this.frame.dispose();
             new LoadingScreen().show();
             //new LoadingScreen().show();
         });
+
+        RoundedButton button2 = new RoundedButton("TIMER");
+        Custom.startButton(button2);
+        //this.frame.add(button2, BorderLayout.SOUTH);
+
+        button2.addActionListener(e -> {
+            this.frame.dispose();
+            new GymTimer().showTimer();
+        });
+
         clock();
+
+        buttonPanel.add(button2);
+        buttonPanel.add(button);
+        this.frame.add(buttonPanel, BorderLayout.SOUTH);
 
         this.frame.setVisible(true);
     }
