@@ -4,6 +4,7 @@ import custom.Custom;
 import custom.RoundedButton;
 import loading.LoadingScreen;
 import timer.GymTimer;
+import plan.Plan;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,8 @@ public class App {
         this.frame.setLayout(new BorderLayout());
         this.frame.setLocationRelativeTo(null);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        Custom.background(frame);
 
         JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
         buttonPanel.setOpaque(false);
@@ -48,8 +51,18 @@ public class App {
             new GymTimer().showTimer();
         });
 
+        RoundedButton button3 = new RoundedButton("PLAN");
+        Custom.startButton(button3);
+
+        button3.addActionListener(e -> {
+            this.frame.dispose();
+            new Plan().showPlan();
+        });
+
+
         clock();
 
+        buttonPanel.add(button3);
         buttonPanel.add(button2);
         buttonPanel.add(button);
         this.frame.add(buttonPanel, BorderLayout.SOUTH);

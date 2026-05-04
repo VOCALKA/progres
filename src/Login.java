@@ -46,7 +46,7 @@ public class Login extends JFrame {
             String password = new String(fieldPassword.getPassword());
 
 
-            if (username.equals("admin") && password.equals("1234")) {
+            if (username.equals("a") && password.equals("1")) {
                 this.dispose();
                 new App().showApp();
             } else {

@@ -27,6 +27,8 @@ public class GymTimer {
         this.frame.setLocationRelativeTo(null);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        Custom.background(frame);
+
         labelDisplay = new JLabel("00:00", SwingConstants.CENTER);
         labelDisplay.setFont(new Font("Monospaced", Font.BOLD, 60));
         this.frame.add(labelDisplay, BorderLayout.CENTER);
