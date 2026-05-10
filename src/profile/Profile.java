@@ -94,6 +94,8 @@ public class Profile {
         gbc.gridx = 0; gbc.gridy = 4;
         infoPanel.add(new JLabel("Weight (kg):"), gbc);
 
+
+
         JSlider weightSlider = new JSlider(JSlider.HORIZONTAL, 30, 150, 70);
         weightSlider.setMajorTickSpacing(20);
         weightSlider.setMinorTickSpacing(5);
@@ -102,6 +104,58 @@ public class Profile {
 
         JLabel weightValueLabel = new JLabel("70 kg", JLabel.CENTER);
         weightSlider.addChangeListener(e -> weightValueLabel.setText(weightSlider.getValue() + " kg"));
+
+        //
+
+        String nacteneJmeno = "";
+        int nactenyRok = 2000;
+        int nactenaVaha = 70;
+
+
+        try {
+            java.io.File fProfil = new java.io.File("profil.txt");
+            if (fProfil.exists()) {
+                java.util.List<String> radky = java.nio.file.Files.readAllLines(fProfil.toPath());
+                for (String radek : radky) {
+                    /*if (radek.startsWith("Jmeno: ")) nacteneJmeno = radek.replace("Jmeno: ", "");
+                    if (radek.startsWith("Rok narozeni: ")) nactenyRok = Integer.parseInt(radek.replace("Rok narozeni: ", "").trim());*/
+                    if (radek.startsWith("Jmeno: ")) nacteneJmeno = radek.replace("Jmeno: ", "");
+                    if (radek.startsWith("Rok narozeni: ")) nactenyRok = Integer.parseInt(radek.replace("Rok narozeni: ", "").trim());
+                    if (radek.startsWith("Vyska: ")) heightField.setText(radek.replace("Vyska: ", "").trim());
+                    if (radek.startsWith("Gender: ")) {
+                        if (radek.contains("Male")) male.setSelected(true);
+                        else if (radek.contains("Female")) female.setSelected(true);
+                    }
+                }
+            }
+
+
+            java.io.File fVahy = new java.io.File("vahy.txt");
+            if (fVahy.exists()) {
+                java.util.List<String> vsechnyVahy = java.nio.file.Files.readAllLines(fVahy.toPath());
+                if (!vsechnyVahy.isEmpty()) {
+
+                    String posledniZaznam = vsechnyVahy.get(vsechnyVahy.size() - 1);
+                    String[] casti = posledniZaznam.split(";");
+                    if (casti.length == 2) {
+                        nactenaVaha = Integer.parseInt(casti[1]);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("Nepodařilo se načíst data: " + ex.getMessage());
+        }
+
+
+        nameField.setText(nacteneJmeno);
+        yearSpinner.setValue(nactenyRok);
+        weightSlider.setValue(nactenaVaha);
+        //
+        weightValueLabel.setText(nactenaVaha + " kg");
+
+
+        //
+
 
         JPanel weightPanel = new JPanel(new BorderLayout());
         weightPanel.add(weightSlider, BorderLayout.CENTER);
@@ -123,7 +177,7 @@ public class Profile {
         Custom.startButton(saveBtn);
         this.frame.add(saveBtn, BorderLayout.SOUTH);
 
-        saveBtn.addActionListener(e -> {
+        /*saveBtn.addActionListener(e -> {
             String data = "NAME: " + nameField.getText() +
                     ", Weight: " + weightSlider.getValue() + "kg";
 
@@ -133,7 +187,52 @@ public class Profile {
             } catch (java.io.IOException ex) {
                 ex.printStackTrace();
             }
+        });*/
+        saveBtn.addActionListener(e -> {
+            String jmeno = nameField.getText();
+            int rokNarozeni = (int) yearSpinner.getValue();
+            String vyska = heightField.getText();
+            String pohlavi = male.isSelected() ? "Male" : (female.isSelected() ? "Female" : "Nezadáno");
+            int vaha = weightSlider.getValue();
+            String dnesniDatum = java.time.LocalDate.now().toString();
+
+            try {
+
+                /*try (java.io.FileWriter fw = new java.io.FileWriter("profil.txt")) {
+                    fw.write("Jmeno: " + jmeno + "\nRok narozeni: " + rokNarozeni);
+                }*/
+                try (java.io.FileWriter fw = new java.io.FileWriter("profil.txt")) {
+                    fw.write("Jmeno: " + jmeno + "\n" +
+                            "Rok narozeni: " + rokNarozeni + "\n" +
+                            "Vyska: " + vyska + "\n" +
+                            "Gender: " + pohlavi);
+                }
+
+                java.io.File souborVahy = new java.io.File("vahy.txt");
+                java.util.Map<String, String> zaznamyVah = new java.util.LinkedHashMap<>();
+
+                if (souborVahy.exists()) {
+                    java.nio.file.Files.lines(souborVahy.toPath()).forEach(line -> {
+                        String[] parts = line.split(";");
+                        if (parts.length == 2) zaznamyVah.put(parts[0], parts[1]);
+                    });
+                }
+
+                zaznamyVah.put(dnesniDatum, String.valueOf(vaha));
+
+                try (java.io.FileWriter fw = new java.io.FileWriter(souborVahy)) {
+                    for (var entry : zaznamyVah.entrySet()) {
+                        fw.write(entry.getKey() + ";" + entry.getValue() + "\n");
+                    }
+                }
+
+                JOptionPane.showMessageDialog(frame, "Profil i váha byly uloženy!");
+            } catch (java.io.IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Chyba při ukládání: " + ex.getMessage());
+            }
         });
+
 
         tabbedPane.addChangeListener(e -> {
 

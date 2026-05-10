@@ -45,7 +45,7 @@ public class RunPlan {
         try (BufferedReader br = new BufferedReader(new FileReader(cesta))) {
             String radek;
             while ((radek = br.readLine()) != null) {
-                dataPlanu.add(radek.split(";")); // Rozdělí text podle středníku
+                dataPlanu.add(radek.split(";"));
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Chyba při načítání souboru!");
