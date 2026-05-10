@@ -3,6 +3,7 @@ package app;
 import custom.Custom;
 import custom.RoundedButton;
 import loading.LoadingScreen;
+import plan.RunPlan;
 import timer.GymTimer;
 import plan.Plan;
 
@@ -59,9 +60,22 @@ public class App {
             new Plan().showPlan();
         });
 
+        RoundedButton button4 = new RoundedButton("Start plan");
+        Custom.startButton(button4);
+        button4.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            int returnVal = chooser.showOpenDialog(null);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                RunPlan r = new RunPlan();
+                r.start(chooser.getSelectedFile().getAbsolutePath());
+            }
+        });
+
+
 
         clock();
 
+        buttonPanel.add(button4);
         buttonPanel.add(button3);
         buttonPanel.add(button2);
         buttonPanel.add(button);
