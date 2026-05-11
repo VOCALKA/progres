@@ -144,6 +144,9 @@ public class Profile {
         tabbedPane.addTab("Statistics", graphPanel);
         tabbedPane.addTab("Home", new JPanel());
 
+        tabbedPane.setBackgroundAt(2, new Color(154, 17, 34));
+        tabbedPane.setForegroundAt(2, Color.WHITE);
+
         this.frame.add(tabbedPane, BorderLayout.CENTER);
 
         RoundedButton saveBtn = new RoundedButton("SAVE PROFILE");
