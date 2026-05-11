@@ -1,33 +1,3 @@
-/*package profile;
-
-import custom.Custom;
-import custom.RoundedButton;
-
-import javax.swing.*;
-import java.awt.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-
-
-
-public class Profile {
-    private JFrame frame;
-
-
-    public Profile() {
-        this.frame = new JFrame("PROFILE");
-    }
-
-    public void showApp(){
-        this.frame.setSize(500, 500);
-        this.frame.setLayout(new BorderLayout());
-        this.frame.setLocationRelativeTo(null);
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        this.frame.setVisible(true);
-    }
-}*/
 package profile;
 
 import app.App;
@@ -36,8 +6,10 @@ import custom.RoundedButton;
 
 import javax.swing.*;
 import java.awt.*;
-
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Profile {
     private JFrame frame;
@@ -46,13 +18,36 @@ public class Profile {
         this.frame = new JFrame("Fitness Profil");
     }
 
+
+    private List<Double> nactiVahyZeSouboru() {
+        List<Double> vahy = new ArrayList<>();
+        try {
+            java.io.File fVahy = new java.io.File("vahy.txt");
+            if (fVahy.exists()) {
+                List<String> radky = java.nio.file.Files.readAllLines(fVahy.toPath());
+                for (String radek : radky) {
+                    String[] casti = radek.split(";");
+                    if (casti.length == 2) {
+                        vahy.add(Double.parseDouble(casti[1]));
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return vahy;
+    }
+
     public void showApp() {
         this.frame.setSize(500, 600);
         this.frame.setLayout(new BorderLayout());
         this.frame.setLocationRelativeTo(null);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        Custom.background(frame);
+
         JTabbedPane tabbedPane = new JTabbedPane();
+
 
         JPanel infoPanel = new JPanel(new GridBagLayout());
         infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -90,11 +85,8 @@ public class Profile {
         gbc.gridx = 1;
         infoPanel.add(genderPanel, gbc);
 
-
         gbc.gridx = 0; gbc.gridy = 4;
         infoPanel.add(new JLabel("Weight (kg):"), gbc);
-
-
 
         JSlider weightSlider = new JSlider(JSlider.HORIZONTAL, 30, 150, 70);
         weightSlider.setMajorTickSpacing(20);
@@ -105,20 +97,16 @@ public class Profile {
         JLabel weightValueLabel = new JLabel("70 kg", JLabel.CENTER);
         weightSlider.addChangeListener(e -> weightValueLabel.setText(weightSlider.getValue() + " kg"));
 
-        //
 
         String nacteneJmeno = "";
         int nactenyRok = 2000;
         int nactenaVaha = 70;
 
-
         try {
             java.io.File fProfil = new java.io.File("profil.txt");
             if (fProfil.exists()) {
-                java.util.List<String> radky = java.nio.file.Files.readAllLines(fProfil.toPath());
+                List<String> radky = java.nio.file.Files.readAllLines(fProfil.toPath());
                 for (String radek : radky) {
-                    /*if (radek.startsWith("Jmeno: ")) nacteneJmeno = radek.replace("Jmeno: ", "");
-                    if (radek.startsWith("Rok narozeni: ")) nactenyRok = Integer.parseInt(radek.replace("Rok narozeni: ", "").trim());*/
                     if (radek.startsWith("Jmeno: ")) nacteneJmeno = radek.replace("Jmeno: ", "");
                     if (radek.startsWith("Rok narozeni: ")) nactenyRok = Integer.parseInt(radek.replace("Rok narozeni: ", "").trim());
                     if (radek.startsWith("Vyska: ")) heightField.setText(radek.replace("Vyska: ", "").trim());
@@ -129,33 +117,18 @@ public class Profile {
                 }
             }
 
-
-            java.io.File fVahy = new java.io.File("vahy.txt");
-            if (fVahy.exists()) {
-                java.util.List<String> vsechnyVahy = java.nio.file.Files.readAllLines(fVahy.toPath());
-                if (!vsechnyVahy.isEmpty()) {
-
-                    String posledniZaznam = vsechnyVahy.get(vsechnyVahy.size() - 1);
-                    String[] casti = posledniZaznam.split(";");
-                    if (casti.length == 2) {
-                        nactenaVaha = Integer.parseInt(casti[1]);
-                    }
-                }
+            List<Double> vsechnyVahy = nactiVahyZeSouboru();
+            if (!vsechnyVahy.isEmpty()) {
+                nactenaVaha = vsechnyVahy.get(vsechnyVahy.size() - 1).intValue();
             }
         } catch (Exception ex) {
             System.out.println("Nepodařilo se načíst data: " + ex.getMessage());
         }
 
-
         nameField.setText(nacteneJmeno);
         yearSpinner.setValue(nactenyRok);
         weightSlider.setValue(nactenaVaha);
-        //
         weightValueLabel.setText(nactenaVaha + " kg");
-
-
-        //
-
 
         JPanel weightPanel = new JPanel(new BorderLayout());
         weightPanel.add(weightSlider, BorderLayout.CENTER);
@@ -165,11 +138,11 @@ public class Profile {
         infoPanel.add(weightPanel, gbc);
 
 
+        WeightChart graphPanel = new WeightChart(nactiVahyZeSouboru());
+
         tabbedPane.addTab("Profile", infoPanel);
-        tabbedPane.addTab("Statistics", new JPanel());
-        tabbedPane.add("Home", new JPanel());
-
-
+        tabbedPane.addTab("Statistics", graphPanel);
+        tabbedPane.addTab("Home", new JPanel());
 
         this.frame.add(tabbedPane, BorderLayout.CENTER);
 
@@ -177,17 +150,6 @@ public class Profile {
         Custom.startButton(saveBtn);
         this.frame.add(saveBtn, BorderLayout.SOUTH);
 
-        /*saveBtn.addActionListener(e -> {
-            String data = "NAME: " + nameField.getText() +
-                    ", Weight: " + weightSlider.getValue() + "kg";
-
-            try (java.io.FileWriter writer = new java.io.FileWriter("profil.txt")) {
-                writer.write(data);
-                JOptionPane.showMessageDialog(frame, "Profile saved to file!");
-            } catch (java.io.IOException ex) {
-                ex.printStackTrace();
-            }
-        });*/
         saveBtn.addActionListener(e -> {
             String jmeno = nameField.getText();
             int rokNarozeni = (int) yearSpinner.getValue();
@@ -197,10 +159,6 @@ public class Profile {
             String dnesniDatum = java.time.LocalDate.now().toString();
 
             try {
-
-                /*try (java.io.FileWriter fw = new java.io.FileWriter("profil.txt")) {
-                    fw.write("Jmeno: " + jmeno + "\nRok narozeni: " + rokNarozeni);
-                }*/
                 try (java.io.FileWriter fw = new java.io.FileWriter("profil.txt")) {
                     fw.write("Jmeno: " + jmeno + "\n" +
                             "Rok narozeni: " + rokNarozeni + "\n" +
@@ -209,7 +167,7 @@ public class Profile {
                 }
 
                 java.io.File souborVahy = new java.io.File("vahy.txt");
-                java.util.Map<String, String> zaznamyVah = new java.util.LinkedHashMap<>();
+                Map<String, String> zaznamyVah = new LinkedHashMap<>();
 
                 if (souborVahy.exists()) {
                     java.nio.file.Files.lines(souborVahy.toPath()).forEach(line -> {
@@ -226,6 +184,8 @@ public class Profile {
                     }
                 }
 
+                graphPanel.setWeights(nactiVahyZeSouboru());
+
                 JOptionPane.showMessageDialog(frame, "Profil i váha byly uloženy!");
             } catch (java.io.IOException ex) {
                 ex.printStackTrace();
@@ -233,19 +193,16 @@ public class Profile {
             }
         });
 
-
         tabbedPane.addChangeListener(e -> {
-
             if (tabbedPane.getSelectedIndex() == 2) {
                 this.frame.dispose();
                 new App().showApp();
             }
         });
 
-
         this.frame.setVisible(true);
     }
-
 }
+
 
 
