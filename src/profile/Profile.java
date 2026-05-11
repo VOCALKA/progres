@@ -140,8 +140,17 @@ public class Profile {
 
         WeightChart graphPanel = new WeightChart(nactiVahyZeSouboru());
 
+        //
+        //
+        JScrollPane scrollGraph = new JScrollPane(graphPanel);
+        scrollGraph.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollGraph.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        //
+         //
+
         tabbedPane.addTab("Profile", infoPanel);
-        tabbedPane.addTab("Statistics", graphPanel);
+        tabbedPane.addTab("Statistics", scrollGraph);
+        //tabbedPane.addTab("Statistics", graphPanel);
         tabbedPane.addTab("Home", new JPanel());
 
         tabbedPane.setBackgroundAt(2, new Color(154, 17, 34));

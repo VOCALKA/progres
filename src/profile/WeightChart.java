@@ -54,7 +54,7 @@ public class WeightChart extends JPanel {
         });
     }
 
-    private Point getPointLocation(int i) {
+    /*private Point getPointLocation(int i) {
         int padding = 50;
         double xStep = (weights.size() > 1) ? (double) (getWidth() - 2 * padding) / (weights.size() - 1) : 0;
 
@@ -72,7 +72,30 @@ public class WeightChart extends JPanel {
     public Dimension getPreferredSize() {
         int baseWidth = 400;
         return new Dimension((int) (baseWidth * zoomFactor), 300);
+    }*/
+    @Override
+    public Dimension getPreferredSize() {
+
+        int width = (int) (450 * zoomFactor);
+        return new Dimension(width, 300);
     }
+
+    private Point getPointLocation(int i) {
+        int padding = 50;
+        int currentWidth = getPreferredSize().width;
+
+        double xStep = (weights.size() > 1) ? (double) (currentWidth - 2 * padding) / (weights.size() - 1) : 0;
+
+        double maxVaha = weights.stream().max(Double::compare).orElse(100.0);
+        maxVaha = Math.max(maxVaha, 100.0);
+        double yScale = (double) (getHeight() - 2 * padding) / maxVaha;
+
+        int x = padding + (int) (i * xStep);
+        int y = getHeight() - padding - (int) (weights.get(i) * yScale);
+
+        return new Point(x, y);
+    }
+
 
     public void setWeights(List<Double> weights) {
         this.weights = weights;
@@ -121,7 +144,9 @@ public class WeightChart extends JPanel {
                 g2.fillOval(p1.x - 4, p1.y - 4, 8, 8);
             }
         }
+
     }
+
 }
 
 
