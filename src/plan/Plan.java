@@ -58,7 +58,9 @@ public class Plan {
         buttonPanel.setOpaque(false);
 
         JButton btnAdd = new JButton("Přidat cvik");
+        JButton btnRun = new JButton("Načíst plán");
         JButton btnSave = new JButton("Uložit a zavřít");
+        JButton btnHome = new JButton("Home");
 
         btnAdd.addActionListener(e -> {
             String radek = cvikField.getText() + ";" + casField.getText() + ";" + restField.getText();
@@ -71,14 +73,35 @@ public class Plan {
             restField.setText("");
         });
 
+        /*btnRun.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            int returnVal = chooser.showOpenDialog(null);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                RunPlan r = new RunPlan();
+                r.start(chooser.getSelectedFile().getAbsolutePath());
+            }
+                }
+                );*/
+        btnRun.addActionListener(e -> {
+            RunPlan r = new RunPlan();
+            r.start();
+        });
+
+
         btnSave.addActionListener(e -> {
             ulozDoSouboru();
             frame.dispose();
             new App().showApp();
         });
+        btnHome.addActionListener(e -> {
+            this.frame.dispose();
+            new App().showApp();
+        });
 
         buttonPanel.add(btnAdd);
+        buttonPanel.add(btnRun);
         buttonPanel.add(btnSave);
+        buttonPanel.add(btnHome);
 
 
         frame.add(topPanel, BorderLayout.NORTH);

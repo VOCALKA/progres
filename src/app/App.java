@@ -60,7 +60,7 @@ public class App {
             new Plan().showPlan();
         });
 
-        RoundedButton button4 = new RoundedButton("Start plan");
+        /*RoundedButton button4 = new RoundedButton("Start plan");
         Custom.startButton(button4);
         button4.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
@@ -69,13 +69,13 @@ public class App {
                 RunPlan r = new RunPlan();
                 r.start(chooser.getSelectedFile().getAbsolutePath());
             }
-        });
+        });*/
 
 
 
         clock();
 
-        buttonPanel.add(button4);
+        //buttonPanel.add(button4);
         buttonPanel.add(button3);
         buttonPanel.add(button2);
         buttonPanel.add(button);

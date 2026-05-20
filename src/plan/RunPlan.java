@@ -16,7 +16,7 @@ public class RunPlan {
     private boolean jeOdpocinek = false;
     private Timer timer;
 
-    public void start(String souborPath) {
+    /*public void start(String souborPath) {
         nactiData(souborPath);
         if (dataPlanu.isEmpty()) return;
 
@@ -39,9 +39,57 @@ public class RunPlan {
         startTimer();
 
         frame.setVisible(true);
+    }*/
+    public void start() {
+
+        File vychoziSlozka = new File("progres");
+
+
+        /*if (!vychoziSlozka.exists()) {
+            vychoziSlozka.mkdir();
+        }*/
+
+        JFileChooser fileChooser = new JFileChooser(vychoziSlozka);
+        fileChooser.setDialogTitle("Vyberte plán tréninku");
+
+        fileChooser.setCurrentDirectory(vychoziSlozka);
+
+        int vysledek = fileChooser.showOpenDialog(null);
+
+        if (vysledek == JFileChooser.APPROVE_OPTION) {
+            File vybranySoubor = fileChooser.getSelectedFile();
+            nactiData(vybranySoubor.getAbsolutePath());
+        } else {
+
+            return;
+        }
+
+        if (dataPlanu.isEmpty()) return;
+
+
+        frame = new JFrame("TRÉNINK BĚŽÍ");
+        frame.setSize(400, 400);
+        frame.setLayout(new GridLayout(3, 1));
+        frame.setLocationRelativeTo(null);
+        Custom.background(frame);
+
+        labelStatus = new JLabel("PŘIPRAV SE", SwingConstants.CENTER);
+        labelCvik = new JLabel(dataPlanu.get(0)[0], SwingConstants.CENTER);
+        labelCas = new JLabel("0", SwingConstants.CENTER);
+        labelCas.setFont(new Font("Arial", Font.BOLD, 50));
+
+        frame.add(labelStatus);
+        frame.add(labelCvik);
+        frame.add(labelCas);
+
+        pripravDalsi(0);
+        startTimer();
+
+        frame.setVisible(true);
     }
 
-    private void nactiData(String cesta) {
+
+        private void nactiData(String cesta) {
         try (BufferedReader br = new BufferedReader(new FileReader(cesta))) {
             String radek;
             while ((radek = br.readLine()) != null) {
