@@ -113,7 +113,7 @@ public class Plan {
         frame.setVisible(true);
     }
 
-    private void ulozDoSouboru() {
+    /*private void ulozDoSouboru() {
         String nazev = nazevPlanuField.getText().trim();
         if (nazev.isEmpty()) nazev = "plan_bez_nazvu";
 
@@ -125,6 +125,60 @@ public class Plan {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }*/
+    /*private void ulozDoSouboru() {
+        String nazev = nazevPlanuField.getText().trim();
+        if (nazev.isEmpty()) nazev = "plan_bez_nazvu";
+
+        File adresar = new File("resources");
+
+        if (!adresar.exists()) {
+            adresar.mkdirs();
+        }
+
+        File soubor = new File(adresar, nazev + ".txt");
+
+        try (FileWriter writer = new FileWriter(soubor)) {
+            for (String s : cvikySeznam) {
+                writer.write(s + System.lineSeparator());
+            }
+            JOptionPane.showMessageDialog(frame, "Plán '" + nazev + "' byl uložen do složky resources!");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(frame, "Chyba při ukládání: " + e.getMessage(), "Chyba", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }*/
+    private void ulozDoSouboru() {
+        String nazev = nazevPlanuField.getText().trim();
+        if (nazev.isEmpty()) nazev = "plan_bez_nazvu";
+
+        File adresar = new File("resources");
+        if (!adresar.exists()) {
+            adresar.mkdirs();
+        }
+
+        File soubor = new File(adresar, nazev + ".txt");
+
+        if (soubor.exists()) {
+            int pocitadlo = 1;
+            while (soubor.exists()) {
+                soubor = new File(adresar, nazev + pocitadlo + ".txt");
+                pocitadlo++;
+            }
+            nazev = soubor.getName().replace(".txt", "");
+        }
+
+        try (FileWriter writer = new FileWriter(soubor)) {
+            for (String s : cvikySeznam) {
+                writer.write(s + System.lineSeparator());
+            }
+            JOptionPane.showMessageDialog(frame, "Plán '" + nazev + "' byl uložen do složky resources!");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(frame, "Chyba při ukládání: " + e.getMessage(), "Chyba", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
+
+
 
 }

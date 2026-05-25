@@ -165,7 +165,7 @@ public class RunPlan {
         timer.start();
     }
 
-    private void prepniStav() {
+    /*private void prepniStav() {
         if (!jeOdpocinek) {
 
             jeOdpocinek = true;
@@ -186,14 +186,56 @@ public class RunPlan {
                 frame.dispose();
             }
         }
+    }*/
+    private void prepniStav() {
+        if (!jeOdpocinek) {
+            jeOdpocinek = true;
+
+            String[] aktualniCvik = dataPlanu.get(aktualniIndex);
+
+            if (aktualniCvik.length > 2 && !aktualniCvik[2].trim().isEmpty()) {
+                zbyvajiciCas = Integer.parseInt(aktualniCvik[2].trim());
+            } else {
+                zbyvajiciCas = 0;
+            }
+
+            labelStatus.setText("ODPOČINEK");
+            labelStatus.setForeground(Color.BLUE);
+        } else {
+            jeOdpocinek = false;
+            aktualniIndex++;
+            if (aktualniIndex < dataPlanu.size()) {
+                pripravDalsi(aktualniIndex);
+            } else {
+                timer.stop();
+                labelStatus.setText("HOTOVO!");
+                JOptionPane.showMessageDialog(frame, "Trénink dokončen!");
+                frame.dispose();
+            }
+        }
     }
 
-    private void pripravDalsi(int index) {
+
+    /*private void pripravDalsi(int index) {
         String[] radek = dataPlanu.get(index);
         labelCvik.setText(radek[0]);
         zbyvajiciCas = Integer.parseInt(radek[1]);
         labelStatus.setText("CVIČ!");
         labelStatus.setForeground(Color.RED);
+    }*/
+    private void pripravDalsi(int index) {
+        String[] radek = dataPlanu.get(index);
+        labelCvik.setText(radek[0]);
+
+        if (radek.length > 1 && !radek[1].trim().isEmpty()) {
+            zbyvajiciCas = Integer.parseInt(radek[1].trim());
+        } else {
+            zbyvajiciCas = 0;
+        }
+
+        labelStatus.setText("CVIČ!");
+        labelStatus.setForeground(Color.RED);
     }
+
 }
 

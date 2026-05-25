@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class Profile {
     private JFrame frame;
+    private JLabel bmiAktualniVahaLabel;
 
     public Profile() {
         this.frame = new JFrame("Fitness Profil");
@@ -140,21 +141,112 @@ public class Profile {
 
         WeightChart graphPanel = new WeightChart(nactiVahyZeSouboru());
 
-        //
-        //
         JScrollPane scrollGraph = new JScrollPane(graphPanel);
         scrollGraph.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollGraph.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+
+        //BMI
+        /*JPanel bmiPanel = new JPanel(new GridBagLayout());
+        bmiPanel.setOpaque(false);
+        GridBagConstraints gbcBmi = new GridBagConstraints();
+        gbcBmi.insets = new Insets(15, 15, 15, 15);
+        gbcBmi.gridx = 0;
+
+        //custom
+        JLabel bmiCisloLabel = new JLabel("--.-", SwingConstants.CENTER);
+        bmiCisloLabel.setFont(new Font("Arial", Font.BOLD, 60));
+        //custom
+        JLabel bmiSlovniLabel = new JLabel("Načítání...", SwingConstants.CENTER);
+        bmiSlovniLabel.setFont(new Font("Arial", Font.BOLD, 22));
+
+        gbcBmi.gridy = 0;
+        bmiPanel.add(new JLabel("VAŠE AKTUÁLNÍ BMI:", SwingConstants.CENTER), gbcBmi);
+        gbcBmi.gridy = 1;
+        bmiPanel.add(bmiCisloLabel, gbcBmi);
+        gbcBmi.gridy = 2;
+        bmiPanel.add(bmiSlovniLabel, gbcBmi);*/
+
+        JPanel bmiPanel = new JPanel(new GridBagLayout());
+        bmiPanel.setOpaque(false);
+        GridBagConstraints gbcBmi = new GridBagConstraints();
+        gbcBmi.insets = new Insets(15, 15, 15, 15);
+        gbcBmi.gridx = 0;
+
+        JLabel bmiCisloLabel = new JLabel("--.-", SwingConstants.CENTER);
+        bmiCisloLabel.setFont(new Font("Arial", Font.BOLD, 60));
+        JLabel bmiSlovniLabel = new JLabel("Načítání...", SwingConstants.CENTER);
+        bmiSlovniLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        //JLabel bmiAktualniVahaLabel = new JLabel("Použitá váha: -- kg", SwingConstants.CENTER);
+        bmiAktualniVahaLabel = new JLabel("Použitá váha: -- kg", SwingConstants.CENTER);
+        bmiAktualniVahaLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        bmiAktualniVahaLabel.setForeground(Color.GRAY);
+
+        gbcBmi.gridy = 0; bmiPanel.add(new JLabel("VAŠE AKTUÁLNÍ BMI:", SwingConstants.CENTER), gbcBmi);
+        gbcBmi.gridy = 1; bmiPanel.add(bmiCisloLabel, gbcBmi);
+        gbcBmi.gridy = 2; bmiPanel.add(bmiSlovniLabel, gbcBmi);
+        gbcBmi.gridy = 3; bmiPanel.add(bmiAktualniVahaLabel, gbcBmi);
+
+        //END BMI
+
+        //
+        //
+        /*JScrollPane scrollGraph = new JScrollPane(graphPanel);
+        scrollGraph.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollGraph.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);*/
         //
          //
+
+        //BMR
+        JPanel kaloriePanel = new JPanel(new GridBagLayout());
+        kaloriePanel.setOpaque(false);
+        GridBagConstraints gbcKal = new GridBagConstraints();
+        gbcKal.insets = new Insets(10, 10, 10, 10);
+        gbcKal.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel kalorieCisloLabel = new JLabel("---- kcal", SwingConstants.CENTER);
+        kalorieCisloLabel.setFont(new Font("Arial", Font.BOLD, 45));
+        kalorieCisloLabel.setForeground(new Color(154, 17, 34));
+
+        JLabel bilkovinyLabel = new JLabel("Bílkoviny: -- g");
+        JLabel sacharidyLabel = new JLabel("Sacharidy: -- g");
+        JLabel tukyLabel = new JLabel("Tuky: -- g");
+
+        Font makroFont = new Font("Arial", Font.BOLD, 16);
+        bilkovinyLabel.setFont(makroFont); bilkovinyLabel.setForeground(new Color(70, 130, 180));
+        sacharidyLabel.setFont(makroFont); sacharidyLabel.setForeground(new Color(218, 165, 32));
+        tukyLabel.setFont(makroFont); tukyLabel.setForeground(new Color(46, 139, 87));
+
+        gbcKal.gridx = 0; gbcKal.gridy = 0; gbcKal.gridwidth = 2;
+        kaloriePanel.add(new JLabel("DOPORUČENÝ DENNÍ PŘÍJEM:", SwingConstants.CENTER), gbcKal);
+        gbcKal.gridy = 1;
+        kaloriePanel.add(kalorieCisloLabel, gbcKal);
+
+        gbcKal.gridy = 2;
+        kaloriePanel.add(new JLabel("--------------------------------------------------", SwingConstants.CENTER), gbcKal);
+
+        gbcKal.gridwidth = 1;
+        gbcKal.gridy = 3; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Bílkoviny (30%):"), gbcKal);
+        gbcKal.gridx = 1; kaloriePanel.add(bilkovinyLabel, gbcKal);
+
+        gbcKal.gridy = 4; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Sacharidy (45%):"), gbcKal);
+        gbcKal.gridx = 1; kaloriePanel.add(sacharidyLabel, gbcKal);
+
+        gbcKal.gridy = 5; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Tuky (25%):"), gbcKal);
+        gbcKal.gridx = 1; kaloriePanel.add(tukyLabel, gbcKal);
+        //END BMR
+        //
 
         tabbedPane.addTab("Profile", infoPanel);
         tabbedPane.addTab("Statistics", scrollGraph);
         //tabbedPane.addTab("Statistics", graphPanel);
+        tabbedPane.addTab("BMI", bmiPanel);
+        tabbedPane.addTab("Calorie", kaloriePanel);
         tabbedPane.addTab("Home", new JPanel());
 
-        tabbedPane.setBackgroundAt(2, new Color(154, 17, 34));
-        tabbedPane.setForegroundAt(2, Color.WHITE);
+        tabbedPane.setBackgroundAt(4, new Color(154, 17, 34));
+        tabbedPane.setForegroundAt(4, Color.WHITE);
+
+
 
         this.frame.add(tabbedPane, BorderLayout.CENTER);
 
@@ -206,14 +298,96 @@ public class Profile {
         });
 
         tabbedPane.addChangeListener(e -> {
-            if (tabbedPane.getSelectedIndex() == 2) {
+            if (tabbedPane.getSelectedIndex() == 4) {
                 this.frame.dispose();
                 new App().showApp();
             }
         });
 
+        //
+        /*tabbedPane.addChangeListener(e -> {
+            int zvolenyIndex = tabbedPane.getSelectedIndex();
+
+
+            if (zvolenyIndex == 2) {
+                BmiCalculator.BmiVysledek vysledek = BmiCalculator.spocitejBmi();
+                if (vysledek.bmi > 0) {
+                    bmiCisloLabel.setText(String.valueOf(vysledek.bmi));
+                    bmiSlovniLabel.setText(vysledek.slovniHodnoceni.toUpperCase());
+
+
+                    Color barva = ziskejBarvuBmi(vysledek.slovniHodnoceni);
+                    bmiCisloLabel.setForeground(barva);
+                    bmiSlovniLabel.setForeground(barva);
+                } else {
+                    bmiCisloLabel.setText("??.?");
+                    bmiSlovniLabel.setText("CHYBÍ DATA V PROFILU!");
+                    bmiSlovniLabel.setForeground(Color.GRAY);
+                }
+            }
+        });*/
+        // Listener pro BMI (Index 2)
+        tabbedPane.addChangeListener(e -> {
+            if (tabbedPane.getSelectedIndex() == 2) {
+
+                bmiAktualniVahaLabel.setText("Použitá váha: " + weightSlider.getValue() + " kg");
+
+                BmiCalculator.BmiVysledek vysledek = BmiCalculator.spocitejBmi();
+                if (vysledek.bmi > 0) {
+                    bmiCisloLabel.setText(String.valueOf(vysledek.bmi));
+                    bmiSlovniLabel.setText(vysledek.slovniHodnoceni.toUpperCase());
+
+                    Color barva = ziskejBarvuBmi(vysledek.slovniHodnoceni);
+                    bmiCisloLabel.setForeground(barva);
+                    bmiSlovniLabel.setForeground(barva);
+                } else {
+                    bmiCisloLabel.setText("??.?");
+                    bmiSlovniLabel.setText("CHYBÍ DATA V PROFILU!");
+                    bmiSlovniLabel.setForeground(Color.GRAY);
+                }
+            }
+        });
+
+        tabbedPane.addChangeListener(e -> {
+            if (tabbedPane.getSelectedIndex() == 3) {
+                BmrCalculator.BmrVysledek bmrVysledek = BmrCalculator.spocitejBmr();
+                if (bmrVysledek.doporucenyPrijem > 0) {
+                    int celkemKcal = bmrVysledek.doporucenyPrijem;
+                    kalorieCisloLabel.setText(celkemKcal + " kcal");
+
+                    int gBilkoviny = (int) Math.round((celkemKcal * 0.30) / 4.0);
+                    int gSacharidy = (int) Math.round((celkemKcal * 0.45) / 4.0);
+                    int gTuky = (int) Math.round((celkemKcal * 0.25) / 9.0);
+
+                    bilkovinyLabel.setText(gBilkoviny + " g");
+                    sacharidyLabel.setText(gSacharidy + " g");
+                    tukyLabel.setText(gTuky + " g");
+                } else {
+                    kalorieCisloLabel.setText("---- kcal");
+                    bilkovinyLabel.setText("-- g");
+                    sacharidyLabel.setText("-- g");
+                    tukyLabel.setText("-- g");
+                }
+            }
+        });
+
+
+        //
+
         this.frame.setVisible(true);
     }
+    private Color ziskejBarvuBmi(String stav) {
+        if (stav == null) return Color.BLACK;
+        switch (stav) {
+            case "Normální váha": return new Color(34, 139, 34);
+            case "Podváha": return new Color(255, 140, 0);
+            case "Nadváha": return new Color(255, 69, 0);
+            case "Obezita": return Color.RED;
+            default: return Color.BLACK;
+        }
+    }
+
+
 }
 
 
