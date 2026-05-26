@@ -51,6 +51,7 @@ public class Profile {
 
 
         JPanel infoPanel = new JPanel(new GridBagLayout());
+        infoPanel.setOpaque(false);
         infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -80,6 +81,15 @@ public class Profile {
         JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JRadioButton male = new JRadioButton("Male");
         JRadioButton female = new JRadioButton("Female");
+        //
+        genderPanel.setOpaque(false);
+        male.setOpaque(false);
+        male.setFocusPainted(false);
+        //male.setBorderPainted(false);
+        female.setOpaque(false);
+        female.setFocusPainted(false);
+        //female.setBorderPainted(false);
+        //
         ButtonGroup group = new ButtonGroup();
         group.add(male); group.add(female);
         genderPanel.add(male); genderPanel.add(female);
@@ -94,6 +104,18 @@ public class Profile {
         weightSlider.setMinorTickSpacing(5);
         weightSlider.setPaintTicks(true);
         weightSlider.setPaintLabels(true);
+        weightSlider.setOpaque(false);
+        weightSlider.setFocusable(false);
+        weightSlider.setUI(new javax.swing.plaf.basic.BasicSliderUI(weightSlider) {
+            @Override
+            public void paintThumb(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setColor(new Color(0, 0, 54));
+                g2d.fillRect(thumbRect.x, thumbRect.y, thumbRect.width, thumbRect.height);
+            }
+        });
+
+
 
         JLabel weightValueLabel = new JLabel("70 kg", JLabel.CENTER);
         weightSlider.addChangeListener(e -> weightValueLabel.setText(weightSlider.getValue() + " kg"));
@@ -132,6 +154,7 @@ public class Profile {
         weightValueLabel.setText(nactenaVaha + " kg");
 
         JPanel weightPanel = new JPanel(new BorderLayout());
+        weightPanel.setOpaque(false);
         weightPanel.add(weightSlider, BorderLayout.CENTER);
         weightPanel.add(weightValueLabel, BorderLayout.SOUTH);
 
