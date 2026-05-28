@@ -55,7 +55,8 @@ public class Plan {
         JScrollPane scrollPane = new JScrollPane(jList);
 
 
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 4, 10, 10));
         buttonPanel.setOpaque(false);
 
         JButton btnAdd = new JButton("Přidat cvik");

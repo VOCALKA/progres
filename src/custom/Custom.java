@@ -29,5 +29,14 @@ public class Custom {
         frame.getContentPane().setBackground(new Color(169, 224, 255));
     }
 
+    public static void streakStyle(JLabel label, int streakHodnota) {
+        label.setFont(new Font("Arial", Font.BOLD, 22));
+        if (streakHodnota > 0) {
+            label.setForeground(new Color(255, 102, 0));
+        } else {
+            label.setForeground(Color.GRAY);
+        }
+    }
+
 
 }

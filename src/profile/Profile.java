@@ -20,7 +20,7 @@ public class Profile {
     }
 
 
-    private List<Double> nactiVahyZeSouboru() {
+    /*private List<Double> nactiVahyZeSouboru() {
         List<Double> vahy = new ArrayList<>();
         try {
             java.io.File fVahy = new java.io.File("vahy.txt");
@@ -37,7 +37,41 @@ public class Profile {
             ex.printStackTrace();
         }
         return vahy;
+    }*/
+    private List<profile.WeightChart.ZaznamVahy> nactiVahyZeSouboru() {
+        List<profile.WeightChart.ZaznamVahy> vahy = new ArrayList<>();
+
+        java.util.Map<java.time.LocalDate, Double> serazeneZaznamy = new java.util.TreeMap<>();
+
+        try {
+            java.io.File fVahy = new java.io.File("vahy.txt");
+            if (fVahy.exists()) {
+                List<String> radky = java.nio.file.Files.readAllLines(fVahy.toPath());
+                for (String radek : radky) {
+                    String[] casti = radek.split(";");
+                    if (casti.length == 2) {
+                        try {
+                            java.time.LocalDate datum = java.time.LocalDate.parse(casti[0].trim());
+                            double vaha = Double.parseDouble(casti[1].trim());
+                            serazeneZaznamy.put(datum, vaha);
+                        } catch (Exception e) {
+
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        for (java.util.Map.Entry<java.time.LocalDate, Double> entry : serazeneZaznamy.entrySet()) {
+            vahy.add(new profile.WeightChart.ZaznamVahy(entry.getKey(), entry.getValue()));
+        }
+
+        return vahy;
     }
+
+
 
     public void showApp() {
         this.frame.setSize(500, 600);
@@ -140,9 +174,11 @@ public class Profile {
                 }
             }
 
-            List<Double> vsechnyVahy = nactiVahyZeSouboru();
+            //List<Double> vsechnyVahy = nactiVahyZeSouboru();
+            List<profile.WeightChart.ZaznamVahy> vsechnyVahy = nactiVahyZeSouboru();
             if (!vsechnyVahy.isEmpty()) {
-                nactenaVaha = vsechnyVahy.get(vsechnyVahy.size() - 1).intValue();
+                //nactenaVaha = vsechnyVahy.get(vsechnyVahy.size() - 1).intValue();
+                nactenaVaha = (int) vsechnyVahy.get(vsechnyVahy.size() - 1).vaha();
             }
         } catch (Exception ex) {
             System.out.println("Nepodařilo se načíst data: " + ex.getMessage());

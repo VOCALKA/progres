@@ -6,14 +6,22 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class WeightChart extends JPanel {
-    private List<Double> weights;
+    //private List<Double> weights;
+    private List<ZaznamVahy> weights;
     private int hoveredIndex = -1;
     private double zoomFactor = 1.0;
 
-    public WeightChart(List<Double> weights) {
+    //
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy");
+    //
+    /*public WeightChart(List<Double> weights) {
+        this.weights = weights;
+        setBackground(Color.WHITE);*/
+    public WeightChart(List<ZaznamVahy> weights) {
         this.weights = weights;
         setBackground(Color.WHITE);
 
@@ -54,25 +62,7 @@ public class WeightChart extends JPanel {
         });
     }
 
-    /*private Point getPointLocation(int i) {
-        int padding = 50;
-        double xStep = (weights.size() > 1) ? (double) (getWidth() - 2 * padding) / (weights.size() - 1) : 0;
 
-        double maxVaha = weights.stream().max(Double::compare).orElse(100.0);
-        maxVaha = Math.max(maxVaha, 100.0);
-        double yScale = (double) (getHeight() - 2 * padding) / maxVaha;
-
-        int x = padding + (int) (i * xStep * zoomFactor);
-        int y = getHeight() - padding - (int) (weights.get(i) * yScale);
-
-        return new Point(x, y);
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        int baseWidth = 400;
-        return new Dimension((int) (baseWidth * zoomFactor), 300);
-    }*/
     @Override
     public Dimension getPreferredSize() {
 
@@ -86,18 +76,30 @@ public class WeightChart extends JPanel {
 
         double xStep = (weights.size() > 1) ? (double) (currentWidth - 2 * padding) / (weights.size() - 1) : 0;
 
-        double maxVaha = weights.stream().max(Double::compare).orElse(100.0);
+        /*double maxVaha = weights.stream().max(Double::compare).orElse(100.0);
         maxVaha = Math.max(maxVaha, 100.0);
         double yScale = (double) (getHeight() - 2 * padding) / maxVaha;
 
         int x = padding + (int) (i * xStep);
         int y = getHeight() - padding - (int) (weights.get(i) * yScale);
 
+        return new Point(x, y);*/
+        double maxVaha = weights.stream().mapToDouble(ZaznamVahy::vaha).max().orElse(100.0);
+        maxVaha = Math.max(maxVaha, 100.0);
+        double yScale = (double) (getHeight() - 2 * padding) / maxVaha;
+
+        int x = padding + (int) (i * xStep);
+        int y = getHeight() - padding - (int) (weights.get(i).vaha() * yScale);
+
         return new Point(x, y);
     }
 
 
-    public void setWeights(List<Double> weights) {
+    /*public void setWeights(List<Double> weights) {
+        this.weights = weights;
+        repaint();
+    }*/
+    public void setWeights(List<ZaznamVahy> weights) {
         this.weights = weights;
         repaint();
     }
@@ -136,9 +138,15 @@ public class WeightChart extends JPanel {
                 g2.setColor(Color.RED);
                 g2.fillOval(p1.x - 6, p1.y - 6, 12, 12);
 
-                String text = weights.get(i) + " kg";
+                /*String text = weights.get(i) + " kg";
                 g2.setColor(Color.BLACK);
-                g2.drawString(text, p1.x - 10, p1.y - 15);
+                g2.drawString(text, p1.x - 10, p1.y - 15);*/
+                ZaznamVahy aktualni = weights.get(i);
+                String datumText = aktualni.datum().format(formatter);
+                String text = aktualni.vaha() + " kg | " + datumText;
+
+                g2.setColor(Color.BLACK);
+                g2.drawString(text, p1.x - 20, p1.y - 15);
             } else {
                 g2.setColor(new Color(41, 128, 185));
                 g2.fillOval(p1.x - 4, p1.y - 4, 8, 8);
@@ -146,6 +154,8 @@ public class WeightChart extends JPanel {
         }
 
     }
+    public record ZaznamVahy(java.time.LocalDate datum, double vaha) {}
+
 
 }
 

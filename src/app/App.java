@@ -17,6 +17,7 @@ import java.util.Locale;
 public class App {
     private JFrame frame;
     private JLabel casLabel;
+    private JLabel streakLabel;
 
     public App() {
         this.frame = new JFrame("APP!");
@@ -29,6 +30,19 @@ public class App {
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Custom.background(frame);
+
+        //Streak Manager
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
+
+        int aktualniStreak = StreakManager.getWeightStreak();
+
+        streakLabel = new JLabel("<html>&#128293; " + aktualniStreak + " DNÍ STREAK</html>", SwingConstants.CENTER);
+        Custom.streakStyle(streakLabel, aktualniStreak);
+
+        centerPanel.add(streakLabel, new GridBagConstraints());
+        this.frame.add(centerPanel, BorderLayout.CENTER);
+        //END
 
         JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
         buttonPanel.setOpaque(false);
@@ -86,7 +100,8 @@ public class App {
 
     public void clock(){
         casLabel = new JLabel("", SwingConstants.CENTER);
-        casLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        Custom.startText(casLabel);
+        //casLabel.setFont(new Font("Arial", Font.BOLD, 16));
         this.frame.add(casLabel, BorderLayout.NORTH);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d. MMMM yyyy HH:mm:ss",
