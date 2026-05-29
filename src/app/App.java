@@ -1,5 +1,6 @@
 package app;
 
+import calorieTracker.CalorieTracker;
 import custom.Custom;
 import custom.RoundedButton;
 import loading.LoadingScreen;
@@ -74,6 +75,14 @@ public class App {
             new Plan().showPlan();
         });
 
+        RoundedButton buttonCalories = new RoundedButton("CALORIES");
+        Custom.startButton(buttonCalories);
+
+        buttonCalories.addActionListener(e -> {
+            this.frame.dispose(); // Zavře hlavní menu
+            new CalorieTracker().showTracker(); // Otevře kalorickou tabulku s API
+        });
+
         /*RoundedButton button4 = new RoundedButton("Start plan");
         Custom.startButton(button4);
         button4.addActionListener(e -> {
@@ -90,6 +99,7 @@ public class App {
         clock();
 
         //buttonPanel.add(button4);
+        buttonPanel.add(buttonCalories);
         buttonPanel.add(button3);
         buttonPanel.add(button2);
         buttonPanel.add(button);

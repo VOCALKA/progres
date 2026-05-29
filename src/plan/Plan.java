@@ -105,6 +105,12 @@ public class Plan {
         buttonPanel.add(btnSave);
         buttonPanel.add(btnHome);
 
+        Custom.startButton(btnAdd);
+        Custom.startButton(btnRun);
+        Custom.startButton(btnSave);
+        Custom.startButton(btnHome);
+
+
 
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(inputPanel, BorderLayout.CENTER);
