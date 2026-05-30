@@ -17,6 +17,7 @@ public class WeightChart extends JPanel {
 
     //
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy");
+
     //
     /*public WeightChart(List<Double> weights) {
         this.weights = weights;
@@ -121,7 +122,7 @@ public class WeightChart extends JPanel {
 
         g2.setColor(Color.LIGHT_GRAY);
         g2.drawLine(padding, height - padding, padding, padding);
-        g2.drawLine(padding, height - padding, (int)(width * zoomFactor), height - padding);
+        g2.drawLine(padding, height - padding, (int) (width * zoomFactor), height - padding);
 
         for (int i = 0; i < weights.size(); i++) {
             Point p1 = getPointLocation(i);
@@ -154,8 +155,9 @@ public class WeightChart extends JPanel {
         }
 
     }
-    public record ZaznamVahy(java.time.LocalDate datum, double vaha) {}
 
+    public record ZaznamVahy(java.time.LocalDate datum, double vaha) {
+    }
 
 }
 
