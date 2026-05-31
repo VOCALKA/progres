@@ -114,7 +114,7 @@ public class GymTimer {
                     timer.stop();
                     btnStart.setText("START");
                     labelDisplay.setForeground(Color.RED);
-                    JOptionPane.showMessageDialog(null, "Time's up! Back to work!");
+                    JOptionPane.showMessageDialog(null, "Time's up!");
                     labelDisplay.setForeground(Color.BLACK);
                 }
             }

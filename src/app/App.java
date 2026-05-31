@@ -116,7 +116,7 @@ public class App {
         this.frame.add(casLabel, BorderLayout.NORTH);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d. MMMM yyyy HH:mm:ss",
-                new Locale("cs", "CZ"));
+                new Locale("en", "US"));
 
         Timer timer = new Timer(1000, e -> {
             casLabel.setText(LocalDateTime.now().format(formatter));
