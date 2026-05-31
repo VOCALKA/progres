@@ -4,6 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RoundedButton extends JButton {
+    /**
+     * Constructs a new RoundedButton with the specified text label.
+     * Disables the default operating system background fills, border painting, and focus indicators
+     * to prevent native UI layers from clipping or interfering with the custom vector geometry.
+     *
+     * @param label The text to be displayed on the button surface.
+     */
     public RoundedButton(String label) {
         super(label);
         setContentAreaFilled(false);
@@ -11,6 +18,14 @@ public class RoundedButton extends JButton {
         setFocusPainted(false);
     }
 
+    /**
+     * Paints the visual surface of the component using custom rounded geometry.
+     * Creates a isolated graphic context snapshot, activates vector anti-aliasing for ultra-smooth edges,
+     * renders a filled rounded rectangle using the currently active component background color,
+     * and forwards execution to the superclass to overlay the button text safely.
+     *
+     * @param g The standard systems canvas graphics pipeline driver model.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();

@@ -7,37 +7,44 @@ import java.util.List;
 
 public class BmrCalculator {
 
-    public static class BmrVysledek {
-        public int bmrBazalni;
-        public int doporucenyPrijem;
+    public static class BmrResult {
+        public int bmrBasal;
+        public int recommendedIntake;
 
-        public BmrVysledek(int bmrBazalni, int doporucenyPrijem) {
-            this.bmrBazalni = bmrBazalni;
-            this.doporucenyPrijem = doporucenyPrijem;
+        public BmrResult(int bmrBasal, int recommendedIntake) {
+            this.bmrBasal = bmrBasal;
+            this.recommendedIntake = recommendedIntake;
         }
     }
 
-    public static BmrVysledek spocitejBmr() {
-        int rokNarozeni = 2000;
-        double vyskaCm = 0;
-        String pohlavi = "Not entered";
-        double vahaKg = 0;
+    /**
+     * Computes the final user metabolic stats based on stored disk files.
+     * Extracts bodily height metrics and biological markers, loads the correct synchronized calendar date weight,
+     * adjusts mathematical formulas across gender pathways, and builds the return data structure payload.
+     *
+     * @return A populated {@link BmrResult} dataset containing parsed metric numbers, or zeros if inputs are invalid.
+     */
+    public static BmrResult countBmr() {
+        int birthYear = 2000;
+        double heightCm = 0;
+        String gender = "Not entered";
+        double weightKg = 0;
 
 
         try {
             File fProfil = new File("profil.txt");
             if (fProfil.exists()) {
-                List<String> radky = Files.readAllLines(fProfil.toPath());
-                for (String radek : radky) {
-                    if (radek.startsWith("Year of birth: ")) {
-                        rokNarozeni = Integer.parseInt(radek.replace("Year of birth: ", "").trim());
+                List<String> lines = Files.readAllLines(fProfil.toPath());
+                for (String line : lines) {
+                    if (line.startsWith("Year of birth: ")) {
+                        birthYear = Integer.parseInt(line.replace("Year of birth: ", "").trim());
                     }
-                    if (radek.startsWith("Height: ")) {
-                        String v = radek.replace("Height: ", "").trim();
-                        if (!v.isEmpty()) vyskaCm = Double.parseDouble(v);
+                    if (line.startsWith("Height: ")) {
+                        String v = line.replace("Height: ", "").trim();
+                        if (!v.isEmpty()) heightCm = Double.parseDouble(v);
                     }
-                    if (radek.startsWith("Gender: ")) {
-                        pohlavi = radek.replace("Gender: ", "").trim();
+                    if (line.startsWith("Gender: ")) {
+                        gender = line.replace("Gender: ", "").trim();
                     }
                 }
             }
@@ -46,54 +53,54 @@ public class BmrCalculator {
         }
 
         try {
-            File fVahy = new File("vahy.txt");
-            if (fVahy.exists()) {
-                List<String> radky = Files.readAllLines(fVahy.toPath());
-                String dnesniDatum = LocalDate.now().toString();
-                double posledniZaznamenanaVaha = 0;
-                boolean nalezenaDnesniVaha = false;
+            File fWeight = new File("weights.txt");
+            if (fWeight.exists()) {
+                List<String> lines = Files.readAllLines(fWeight.toPath());
+                String todaysDate = LocalDate.now().toString();
+                double lastRecordedWeight = 0;
+                boolean todayWeightFound = false;
 
-                for (String radek : radky) {
-                    String[] casti = radek.split(";");
-                    if (casti.length == 2) {
-                        String datumZeSouboru = casti[0].trim();
-                        double vahaZeSouboru = Double.parseDouble(casti[1].trim());
-                        posledniZaznamenanaVaha = vahaZeSouboru;
+                for (String line : lines) {
+                    String[] parts = line.split(";");
+                    if (parts.length == 2) {
+                        String dateFromFile = parts[0].trim();
+                        double weightFromFile = Double.parseDouble(parts[1].trim());
+                        lastRecordedWeight = weightFromFile;
 
-                        if (datumZeSouboru.equals(dnesniDatum)) {
-                            vahaKg = vahaZeSouboru;
-                            nalezenaDnesniVaha = true;
+                        if (dateFromFile.equals(todaysDate)) {
+                            weightKg = weightFromFile;
+                            todayWeightFound = true;
                             break;
                         }
                     }
                 }
-                if (!nalezenaDnesniVaha) {
-                    vahaKg = posledniZaznamenanaVaha;
+                if (!todayWeightFound) {
+                    weightKg = lastRecordedWeight;
                 }
             }
         } catch (Exception e) {
             System.out.println("Unable to load weight for BMR: " + e.getMessage());
         }
 
-        if (vyskaCm <= 0 || vahaKg <= 0) {
-            return new BmrVysledek(0, 0);
+        if (heightCm <= 0 || weightKg <= 0) {
+            return new BmrResult(0, 0);
         }
 
-        int vek = LocalDate.now().getYear() - rokNarozeni;
+        int vek = LocalDate.now().getYear() - birthYear;
 
 
         double bmr;
-        if (pohlavi.equalsIgnoreCase("Female")) {
+        if (gender.equalsIgnoreCase("Female")) {
 
-            bmr = (10 * vahaKg) + (6.25 * vyskaCm) - (5 * vek) - 161;
+            bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * vek) - 161;
         } else {
 
-            bmr = (10 * vahaKg) + (6.25 * vyskaCm) - (5 * vek) + 5;
+            bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * vek) + 5;
         }
 
-        double prijem = bmr * 1.2;
+        double intake = bmr * 1.2;
 
-        return new BmrVysledek((int) Math.round(bmr), (int) Math.round(prijem));
+        return new BmrResult((int) Math.round(bmr), (int) Math.round(intake));
     }
 }
 

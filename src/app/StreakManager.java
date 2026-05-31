@@ -10,10 +10,16 @@ import java.util.Set;
 public class StreakManager {
 
 
-    private static Set<LocalDate> nactiDataZpisuVah() {
+    /**
+     * Parses the historical log file "weights.txt" to collect all unique calendar dates that contain weight records.
+     * Utilizes a {@link HashSet} collection wrapper to automatically filter out multiple logging instances committed on the same day.
+     *
+     * @return A unique {@link Set} collection of {@link LocalDate} objects representing valid entry dates.
+     */
+    private static Set<LocalDate> loadWeightRecords() {
         Set<LocalDate> dataZpisu = new HashSet<>();
         try {
-            File fVahy = new File("vahy.txt");
+            File fVahy = new File("weights.txt");
             if (fVahy.exists()) {
                 List<String> radky = Files.readAllLines(fVahy.toPath());
                 for (String radek : radky) {
@@ -35,8 +41,15 @@ public class StreakManager {
     }
 
 
+    /**
+     * Evaluates chronological patterns backward to gauge the absolute length of the current unbroken logging streak.
+     * Validates baseline anchor parameters against today's or yesterday's date, breaking immediately with a zero score
+     * if both dates are vacant, or loops decrementally through calendar nodes to tally the streak sum.
+     *
+     * @return The integer sum total representing consecutive unbroken days of weight logs.
+     */
     public static int getWeightStreak() {
-        Set<LocalDate> dataZpisu = nactiDataZpisuVah();
+        Set<LocalDate> dataZpisu = loadWeightRecords();
         LocalDate dnes = LocalDate.now();
         LocalDate vcera = dnes.minusDays(1);
 

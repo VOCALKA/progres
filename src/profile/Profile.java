@@ -13,28 +13,35 @@ import java.util.Map;
 
 public class Profile {
     private JFrame frame;
-    private JLabel bmiAktualniVahaLabel;
+    private JLabel bmiCurrentWeightLabel;
 
     public Profile() {
         this.frame = new JFrame("Fitness Profil");
     }
 
-    private List<profile.WeightChart.ZaznamVahy> nactiVahyZeSouboru() {
-        List<profile.WeightChart.ZaznamVahy> vahy = new ArrayList<>();
+    /**
+     * Fetches, validates, and chronologically sorts historical weight metrics recorded on disk.
+     * Uses an internal {@link java.util.TreeMap} layer to guarantee ascending temporal organization
+     * before mapping records into safe chart-compatible collections.
+     *
+     * @return A sorted list of structured {@link WeightChart.WeightRecord} objects.
+     */
+    private List<WeightChart.WeightRecord> loadWeightsFromFile() {
+        List<WeightChart.WeightRecord> weights = new ArrayList<>();
 
-        java.util.Map<java.time.LocalDate, Double> serazeneZaznamy = new java.util.TreeMap<>();
+        java.util.Map<java.time.LocalDate, Double> sortedRecords = new java.util.TreeMap<>();
 
         try {
-            java.io.File fVahy = new java.io.File("vahy.txt");
-            if (fVahy.exists()) {
-                List<String> radky = java.nio.file.Files.readAllLines(fVahy.toPath());
-                for (String radek : radky) {
-                    String[] casti = radek.split(";");
-                    if (casti.length == 2) {
+            java.io.File fWeight = new java.io.File("weights.txt");
+            if (fWeight.exists()) {
+                List<String> lines = java.nio.file.Files.readAllLines(fWeight.toPath());
+                for (String line : lines) {
+                    String[] parts = line.split(";");
+                    if (parts.length == 2) {
                         try {
-                            java.time.LocalDate datum = java.time.LocalDate.parse(casti[0].trim());
-                            double vaha = Double.parseDouble(casti[1].trim());
-                            serazeneZaznamy.put(datum, vaha);
+                            java.time.LocalDate date = java.time.LocalDate.parse(parts[0].trim());
+                            double weight = Double.parseDouble(parts[1].trim());
+                            sortedRecords.put(date, weight);
                         } catch (Exception e) {
 
                         }
@@ -45,15 +52,18 @@ public class Profile {
             ex.printStackTrace();
         }
 
-        for (java.util.Map.Entry<java.time.LocalDate, Double> entry : serazeneZaznamy.entrySet()) {
-            vahy.add(new profile.WeightChart.ZaznamVahy(entry.getKey(), entry.getValue()));
+        for (java.util.Map.Entry<java.time.LocalDate, Double> entry : sortedRecords.entrySet()) {
+            weights.add(new WeightChart.WeightRecord(entry.getKey(), entry.getValue()));
         }
 
-        return vahy;
+        return weights;
     }
 
-
-
+    /**
+     * Generates, layouts, and populates the core graphical components for the user profile.
+     * Orchestrates form layouts via {@link GridBagLayout}, streams stored biographical configurations
+     * out of local storage, and initializes real-time sliding scales synchronized with past weight trends.
+     */
     public void showApp() {
         this.frame.setSize(500, 600);
         this.frame.setLayout(new BorderLayout());
@@ -136,39 +146,41 @@ public class Profile {
         weightSlider.addChangeListener(e -> weightValueLabel.setText(weightSlider.getValue() + " kg"));
 
 
-        String nacteneJmeno = "";
-        int nactenyRok = 2000;
-        int nactenaVaha = 70;
+        String loadedName = "";
+        int loadedBirthYear = 2000;
+        int loadedWeight = 70;
 
         try {
             java.io.File fProfil = new java.io.File("profil.txt");
             if (fProfil.exists()) {
-                List<String> radky = java.nio.file.Files.readAllLines(fProfil.toPath());
-                for (String radek : radky) {
-                    if (radek.startsWith("Name: ")) nacteneJmeno = radek.replace("Name: ", "");
-                    if (radek.startsWith("Year of birth: ")) nactenyRok = Integer.parseInt(radek.replace("Year of birth: ", "").trim());
-                    if (radek.startsWith("Height: ")) heightField.setText(radek.replace("Height: ", "").trim());
-                    if (radek.startsWith("Gender: ")) {
-                        if (radek.contains("Male")) male.setSelected(true);
-                        else if (radek.contains("Female")) female.setSelected(true);
+                List<String> lines = java.nio.file.Files.readAllLines(fProfil.toPath());
+                for (String line : lines) {
+                    if (line.startsWith("Name: ")) loadedName = line.replace("Name: ", "");
+                    if (line.startsWith("Year of birth: ")) loadedBirthYear = Integer.parseInt(line.replace(
+                            "Year of birth: ", "").trim());
+                    if (line.startsWith("Height: ")) heightField.setText(line.replace("Height: ",
+                            "").trim());
+                    if (line.startsWith("Gender: ")) {
+                        if (line.contains("Male")) male.setSelected(true);
+                        else if (line.contains("Female")) female.setSelected(true);
                     }
                 }
             }
 
-            //List<Double> vsechnyVahy = nactiVahyZeSouboru();
-            List<profile.WeightChart.ZaznamVahy> vsechnyVahy = nactiVahyZeSouboru();
-            if (!vsechnyVahy.isEmpty()) {
-                //nactenaVaha = vsechnyVahy.get(vsechnyVahy.size() - 1).intValue();
-                nactenaVaha = (int) vsechnyVahy.get(vsechnyVahy.size() - 1).vaha();
+            //List<Double> allWeights = nactiVahyZeSouboru();
+            List<WeightChart.WeightRecord> allWeights = loadWeightsFromFile();
+            if (!allWeights.isEmpty()) {
+                //loadedWeight = allWeights.get(allWeights.size() - 1).intValue();
+                loadedWeight = (int) allWeights.get(allWeights.size() - 1).weight();
             }
         } catch (Exception ex) {
             System.out.println("Failed to load data: " + ex.getMessage());
         }
 
-        nameField.setText(nacteneJmeno);
-        yearSpinner.setValue(nactenyRok);
-        weightSlider.setValue(nactenaVaha);
-        weightValueLabel.setText(nactenaVaha + " kg");
+        nameField.setText(loadedName);
+        yearSpinner.setValue(loadedBirthYear);
+        weightSlider.setValue(loadedWeight);
+        weightValueLabel.setText(loadedWeight + " kg");
 
         JPanel weightPanel = new JPanel(new BorderLayout());
         weightPanel.setOpaque(false);
@@ -179,7 +191,7 @@ public class Profile {
         infoPanel.add(weightPanel, gbc);
 
 
-        WeightChart graphPanel = new WeightChart(nactiVahyZeSouboru());
+        WeightChart graphPanel = new WeightChart(loadWeightsFromFile());
 
         JScrollPane scrollGraph = new JScrollPane(graphPanel);
         scrollGraph.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -193,67 +205,68 @@ public class Profile {
         gbcBmi.insets = new Insets(15, 15, 15, 15);
         gbcBmi.gridx = 0;
 
-        JLabel bmiCisloLabel = new JLabel("--.-", SwingConstants.CENTER);
-        bmiCisloLabel.setFont(new Font("Arial", Font.BOLD, 60));
-        JLabel bmiSlovniLabel = new JLabel("Loading...", SwingConstants.CENTER);
-        bmiSlovniLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        JLabel bmiNumberLabel = new JLabel("--.-", SwingConstants.CENTER);
+        //bmiNumberLabel.setFont(new Font("Arial", Font.BOLD, 60));
+        Custom.bmiNumberStyle(bmiNumberLabel);
+        JLabel bmiStatusLabel = new JLabel("Loading...", SwingConstants.CENTER);
+        //bmiStatusLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        Custom.bmiTextStyle(bmiStatusLabel);
         //JLabel bmiAktualniVahaLabel = new JLabel("Použitá váha: -- kg", SwingConstants.CENTER);
-        bmiAktualniVahaLabel = new JLabel("Weight used: -- kg", SwingConstants.CENTER);
-        bmiAktualniVahaLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        bmiAktualniVahaLabel.setForeground(Color.GRAY);
+        bmiCurrentWeightLabel = new JLabel("Weight used: -- kg", SwingConstants.CENTER);
+        Custom.bmiWeightUsedStyle(bmiCurrentWeightLabel);
+        //bmiAktualniVahaLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        //bmiAktualniVahaLabel.setForeground(Color.GRAY);
 
         gbcBmi.gridy = 0; bmiPanel.add(new JLabel("YOUR CURRENT BMI:", SwingConstants.CENTER), gbcBmi);
-        gbcBmi.gridy = 1; bmiPanel.add(bmiCisloLabel, gbcBmi);
-        gbcBmi.gridy = 2; bmiPanel.add(bmiSlovniLabel, gbcBmi);
-        gbcBmi.gridy = 3; bmiPanel.add(bmiAktualniVahaLabel, gbcBmi);
+        gbcBmi.gridy = 1; bmiPanel.add(bmiNumberLabel, gbcBmi);
+        gbcBmi.gridy = 2; bmiPanel.add(bmiStatusLabel, gbcBmi);
+        gbcBmi.gridy = 3; bmiPanel.add(bmiCurrentWeightLabel, gbcBmi);
 
         //END BMI
 
-        //
-        //
-        /*JScrollPane scrollGraph = new JScrollPane(graphPanel);
-        scrollGraph.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollGraph.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);*/
-        //
-         //
 
         //BMR
-        JPanel kaloriePanel = new JPanel(new GridBagLayout());
-        kaloriePanel.setOpaque(false);
+        JPanel caloriesPanel = new JPanel(new GridBagLayout());
+        caloriesPanel.setOpaque(false);
         GridBagConstraints gbcKal = new GridBagConstraints();
         gbcKal.insets = new Insets(10, 10, 10, 10);
         gbcKal.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel kalorieCisloLabel = new JLabel("---- kcal", SwingConstants.CENTER);
-        kalorieCisloLabel.setFont(new Font("Arial", Font.BOLD, 45));
-        kalorieCisloLabel.setForeground(new Color(154, 17, 34));
+        JLabel calorieNumberLabel = new JLabel("---- kcal", SwingConstants.CENTER);
+        Custom.calorieNumberStyle(calorieNumberLabel);
+        //calorieNumberLabel.setFont(new Font("Arial", Font.BOLD, 45));
+        //calorieNumberLabel.setForeground(new Color(154, 17, 34));
 
-        JLabel bilkovinyLabel = new JLabel("Proteins: -- g");
-        JLabel sacharidyLabel = new JLabel("Carbohydrates: -- g");
-        JLabel tukyLabel = new JLabel("Fats: -- g");
+        JLabel proteinLabel = new JLabel("Proteins: -- g");
+        Custom.macroStyle(proteinLabel, "protein");
+        JLabel carbsLabel = new JLabel("Carbohydrates: -- g");
+        Custom.macroStyle(carbsLabel, "carbs");
+        JLabel fatsLabel = new JLabel("Fats: -- g");
+        Custom.macroStyle(fatsLabel, "fats");
 
-        Font makroFont = new Font("Arial", Font.BOLD, 16);
-        bilkovinyLabel.setFont(makroFont); bilkovinyLabel.setForeground(new Color(70, 130, 180));
-        sacharidyLabel.setFont(makroFont); sacharidyLabel.setForeground(new Color(218, 165, 32));
-        tukyLabel.setFont(makroFont); tukyLabel.setForeground(new Color(46, 139, 87));
+        /*Font makroFont = new Font("Arial", Font.BOLD, 16);
+        proteinLabel.setFont(makroFont); proteinLabel.setForeground(new Color(70, 130, 180));
+        carbsLabel.setFont(makroFont); carbsLabel.setForeground(new Color(218, 165, 32));
+        fatsLabel.setFont(makroFont); fatsLabel.setForeground(new Color(46, 139, 87));*/
 
         gbcKal.gridx = 0; gbcKal.gridy = 0; gbcKal.gridwidth = 2;
-        kaloriePanel.add(new JLabel("RECOMMENDED DAILY INTAKE:", SwingConstants.CENTER), gbcKal);
+        caloriesPanel.add(new JLabel("RECOMMENDED DAILY INTAKE:", SwingConstants.CENTER), gbcKal);
         gbcKal.gridy = 1;
-        kaloriePanel.add(kalorieCisloLabel, gbcKal);
+        caloriesPanel.add(calorieNumberLabel, gbcKal);
 
         gbcKal.gridy = 2;
-        kaloriePanel.add(new JLabel("--------------------------------------------------", SwingConstants.CENTER), gbcKal);
+        caloriesPanel.add(new JLabel("--------------------------------------------------",
+                SwingConstants.CENTER), gbcKal);
 
         gbcKal.gridwidth = 1;
-        gbcKal.gridy = 3; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Proteins (30%):"), gbcKal);
-        gbcKal.gridx = 1; kaloriePanel.add(bilkovinyLabel, gbcKal);
+        gbcKal.gridy = 3; gbcKal.gridx = 0; caloriesPanel.add(new JLabel("Proteins (30%):"), gbcKal);
+        gbcKal.gridx = 1; caloriesPanel.add(proteinLabel, gbcKal);
 
-        gbcKal.gridy = 4; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Carbohydrates (45%):"), gbcKal);
-        gbcKal.gridx = 1; kaloriePanel.add(sacharidyLabel, gbcKal);
+        gbcKal.gridy = 4; gbcKal.gridx = 0; caloriesPanel.add(new JLabel("Carbohydrates (45%):"), gbcKal);
+        gbcKal.gridx = 1; caloriesPanel.add(carbsLabel, gbcKal);
 
-        gbcKal.gridy = 5; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Fats (25%):"), gbcKal);
-        gbcKal.gridx = 1; kaloriePanel.add(tukyLabel, gbcKal);
+        gbcKal.gridy = 5; gbcKal.gridx = 0; caloriesPanel.add(new JLabel("Fats (25%):"), gbcKal);
+        gbcKal.gridx = 1; caloriesPanel.add(fatsLabel, gbcKal);
         //END BMR
         //
 
@@ -261,11 +274,12 @@ public class Profile {
         tabbedPane.addTab("Statistics", scrollGraph);
         //tabbedPane.addTab("Statistics", graphPanel);
         tabbedPane.addTab("BMI", bmiPanel);
-        tabbedPane.addTab("Calorie", kaloriePanel);
+        tabbedPane.addTab("Calorie", caloriesPanel);
         tabbedPane.addTab("Home", new JPanel());
 
-        tabbedPane.setBackgroundAt(4, new Color(154, 17, 34));
-        tabbedPane.setForegroundAt(4, Color.WHITE);
+        /*tabbedPane.setBackgroundAt(4, new Color(154, 17, 34));
+        tabbedPane.setForegroundAt(4, Color.WHITE);*/
+        Custom.styleTab(tabbedPane, 4);
 
 
 
@@ -276,40 +290,40 @@ public class Profile {
         this.frame.add(saveBtn, BorderLayout.SOUTH);
 
         saveBtn.addActionListener(e -> {
-            String jmeno = nameField.getText();
-            int rokNarozeni = (int) yearSpinner.getValue();
-            String vyska = heightField.getText();
-            String pohlavi = male.isSelected() ? "Male" : (female.isSelected() ? "Female" : "Not entered");
-            int vaha = weightSlider.getValue();
-            String dnesniDatum = java.time.LocalDate.now().toString();
+            String name = nameField.getText();
+            int birthYear = (int) yearSpinner.getValue();
+            String height = heightField.getText();
+            String gender = male.isSelected() ? "Male" : (female.isSelected() ? "Female" : "Not entered");
+            int weight = weightSlider.getValue();
+            String todaysDate = java.time.LocalDate.now().toString();
 
             try {
                 try (java.io.FileWriter fw = new java.io.FileWriter("profil.txt")) {
-                    fw.write("Name: " + jmeno + "\n" +
-                            "Year of birth: " + rokNarozeni + "\n" +
-                            "Height: " + vyska + "\n" +
-                            "Gender: " + pohlavi);
+                    fw.write("Name: " + name + "\n" +
+                            "Year of birth: " + birthYear + "\n" +
+                            "Height: " + height + "\n" +
+                            "Gender: " + gender);
                 }
 
-                java.io.File souborVahy = new java.io.File("vahy.txt");
-                Map<String, String> zaznamyVah = new LinkedHashMap<>();
+                java.io.File weightFile = new java.io.File("weights.txt");
+                Map<String, String> weightRecords = new LinkedHashMap<>();
 
-                if (souborVahy.exists()) {
-                    java.nio.file.Files.lines(souborVahy.toPath()).forEach(line -> {
+                if (weightFile.exists()) {
+                    java.nio.file.Files.lines(weightFile.toPath()).forEach(line -> {
                         String[] parts = line.split(";");
-                        if (parts.length == 2) zaznamyVah.put(parts[0], parts[1]);
+                        if (parts.length == 2) weightRecords.put(parts[0], parts[1]);
                     });
                 }
 
-                zaznamyVah.put(dnesniDatum, String.valueOf(vaha));
+                weightRecords.put(todaysDate, String.valueOf(weight));
 
-                try (java.io.FileWriter fw = new java.io.FileWriter(souborVahy)) {
-                    for (var entry : zaznamyVah.entrySet()) {
+                try (java.io.FileWriter fw = new java.io.FileWriter(weightFile)) {
+                    for (var entry : weightRecords.entrySet()) {
                         fw.write(entry.getKey() + ";" + entry.getValue() + "\n");
                     }
                 }
 
-                graphPanel.setWeights(nactiVahyZeSouboru());
+                graphPanel.setWeights(loadWeightsFromFile());
 
                 JOptionPane.showMessageDialog(frame, "Profile saved!");
             } catch (java.io.IOException ex) {
@@ -326,68 +340,48 @@ public class Profile {
         });
 
         //
-        /*tabbedPane.addChangeListener(e -> {
-            int zvolenyIndex = tabbedPane.getSelectedIndex();
 
-
-            if (zvolenyIndex == 2) {
-                BmiCalculator.BmiVysledek vysledek = BmiCalculator.spocitejBmi();
-                if (vysledek.bmi > 0) {
-                    bmiCisloLabel.setText(String.valueOf(vysledek.bmi));
-                    bmiSlovniLabel.setText(vysledek.slovniHodnoceni.toUpperCase());
-
-
-                    Color barva = ziskejBarvuBmi(vysledek.slovniHodnoceni);
-                    bmiCisloLabel.setForeground(barva);
-                    bmiSlovniLabel.setForeground(barva);
-                } else {
-                    bmiCisloLabel.setText("??.?");
-                    bmiSlovniLabel.setText("CHYBÍ DATA V PROFILU!");
-                    bmiSlovniLabel.setForeground(Color.GRAY);
-                }
-            }
-        });*/
         // Listener pro BMI (Index 2)
         tabbedPane.addChangeListener(e -> {
             if (tabbedPane.getSelectedIndex() == 2) {
 
-                bmiAktualniVahaLabel.setText("Weight used: " + weightSlider.getValue() + " kg");
+                bmiCurrentWeightLabel.setText("Weight used: " + weightSlider.getValue() + " kg");
 
-                BmiCalculator.BmiVysledek vysledek = BmiCalculator.spocitejBmi();
-                if (vysledek.bmi > 0) {
-                    bmiCisloLabel.setText(String.valueOf(vysledek.bmi));
-                    bmiSlovniLabel.setText(vysledek.slovniHodnoceni.toUpperCase());
+                BmiCalculator.BmiResult result = BmiCalculator.countBmi();
+                if (result.bmi > 0) {
+                    bmiNumberLabel.setText(String.valueOf(result.bmi));
+                    bmiStatusLabel.setText(result.verbalEvaluation.toUpperCase());
 
-                    Color barva = ziskejBarvuBmi(vysledek.slovniHodnoceni);
-                    bmiCisloLabel.setForeground(barva);
-                    bmiSlovniLabel.setForeground(barva);
+                    Color color = getBmiColor(result.verbalEvaluation);
+                    bmiNumberLabel.setForeground(color);
+                    bmiStatusLabel.setForeground(color);
                 } else {
-                    bmiCisloLabel.setText("??.?");
-                    bmiSlovniLabel.setText("Missing profile data!");
-                    bmiSlovniLabel.setForeground(Color.GRAY);
+                    bmiNumberLabel.setText("??.?");
+                    bmiStatusLabel.setText("Missing profile data!");
+                    bmiStatusLabel.setForeground(Color.GRAY);
                 }
             }
         });
 
         tabbedPane.addChangeListener(e -> {
             if (tabbedPane.getSelectedIndex() == 3) {
-                BmrCalculator.BmrVysledek bmrVysledek = BmrCalculator.spocitejBmr();
-                if (bmrVysledek.doporucenyPrijem > 0) {
-                    int celkemKcal = bmrVysledek.doporucenyPrijem;
-                    kalorieCisloLabel.setText(celkemKcal + " kcal");
+                BmrCalculator.BmrResult bmrResult = BmrCalculator.countBmr();
+                if (bmrResult.recommendedIntake > 0) {
+                    int totalKcal = bmrResult.recommendedIntake;
+                    calorieNumberLabel.setText(totalKcal + " kcal");
 
-                    int gBilkoviny = (int) Math.round((celkemKcal * 0.30) / 4.0);
-                    int gSacharidy = (int) Math.round((celkemKcal * 0.45) / 4.0);
-                    int gTuky = (int) Math.round((celkemKcal * 0.25) / 9.0);
+                    int gBilkoviny = (int) Math.round((totalKcal * 0.30) / 4.0);
+                    int gSacharidy = (int) Math.round((totalKcal * 0.45) / 4.0);
+                    int gTuky = (int) Math.round((totalKcal * 0.25) / 9.0);
 
-                    bilkovinyLabel.setText(gBilkoviny + " g");
-                    sacharidyLabel.setText(gSacharidy + " g");
-                    tukyLabel.setText(gTuky + " g");
+                    proteinLabel.setText(gBilkoviny + " g");
+                    carbsLabel.setText(gSacharidy + " g");
+                    fatsLabel.setText(gTuky + " g");
                 } else {
-                    kalorieCisloLabel.setText("---- kcal");
-                    bilkovinyLabel.setText("-- g");
-                    sacharidyLabel.setText("-- g");
-                    tukyLabel.setText("-- g");
+                    calorieNumberLabel.setText("---- kcal");
+                    proteinLabel.setText("-- g");
+                    carbsLabel.setText("-- g");
+                    fatsLabel.setText("-- g");
                 }
             }
         });
@@ -397,7 +391,15 @@ public class Profile {
 
         this.frame.setVisible(true);
     }
-    private Color ziskejBarvuBmi(String stav) {
+    /**
+     * Returns the appropriate visual color layer based on the evaluation status string.
+     * Maps standard health risk thresholds (Underweight, Normal, Overweight, Obesity)
+     * to a distinctive visual palette for clear dashboard alert feedback.
+     *
+     * @param stav The string literal representing the health status group categorization.
+     * @return A styled {@link Color} instance matching the category, or Color.BLACK if undefined.
+     */
+    private Color getBmiColor(String stav) {
         if (stav == null) return Color.BLACK;
         switch (stav) {
             case "Normal": return new Color(34, 139, 34);

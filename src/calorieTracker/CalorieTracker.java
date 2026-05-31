@@ -26,12 +26,22 @@ public class CalorieTracker {
     private String selectedFoodName = "";
     private OpenFoodFactsWrapper openFoodFactsWrapper;
 
+    /**
+     * Constructs a new CalorieTracker window controller.
+     * Establishes system component baselines and instances the default networking web service layer wrapper.
+     */
     public CalorieTracker() {
         this.frame = new JFrame("Calorie Tracker");
 
         this.openFoodFactsWrapper = new OpenFoodFactsWrapperImpl();
     }
 
+    /**
+     * Generates, layouts, and styles the visual scanning dashboard.
+     * Organizes embedded layout regions, hooks up separate threaded background network tasks to secure
+     * real-time API telemetry, executes clean graphical scaling filters on web icon images,
+     * and performs numeric parsing to output exact dynamic calorie readings.
+     */
     public void showTracker() {
         this.frame.setSize(500, 700);
         this.frame.setLayout(new BorderLayout(15, 15));
@@ -100,7 +110,8 @@ public class CalorieTracker {
         btnSearch.addActionListener(e -> {
             String barcode = txtSearch.getText().trim();
             if (barcode.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Please enter a barcode!", "Error", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Please enter a barcode!",
+                        "Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -149,13 +160,15 @@ public class CalorieTracker {
                         URL imgUrl = URI.create(imageUrl).toURL();
                         Image img = Toolkit.getDefaultToolkit().createImage(imgUrl);
                         ImageIcon rawIcon = new ImageIcon(img);
-                        Image scaledImg = rawIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+                        Image scaledImg = rawIcon.getImage().getScaledInstance(150, 150,
+                                Image.SCALE_SMOOTH);
                         finalIcon = new ImageIcon(scaledImg);
                     }
 
                     final ImageIcon displayIcon = finalIcon;
                     SwingUtilities.invokeLater(() -> {
-                        lblResult.setText("<html><center>" + selectedFoodName + "<br>(" + selectedFoodCaloriesPer100g + " kcal/100g)</center></html>");
+                        lblResult.setText("<html><center>" + selectedFoodName + "<br>(" +
+                                selectedFoodCaloriesPer100g + " kcal/100g)</center></html>");
                         lblResult.setForeground(Color.BLACK);
                         if (displayIcon != null) {
                             lblProductImage.setIcon(displayIcon);
@@ -177,7 +190,8 @@ public class CalorieTracker {
 
         btnCalculate.addActionListener(e -> {
             if (selectedFoodCaloriesPer100g == 0) {
-                JOptionPane.showMessageDialog(frame, "Please fetch a valid product from API first!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Please fetch a valid product from API first!",
+                        "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -190,7 +204,8 @@ public class CalorieTracker {
                 lblResult.setForeground(new Color(0, 128, 0));
 
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Please enter a valid weight in grams!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Please enter a valid weight in grams!",
+                        "Invalid Input", JOptionPane.ERROR_MESSAGE);
             }
         });
 

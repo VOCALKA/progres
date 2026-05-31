@@ -7,38 +7,45 @@ import java.util.List;
 
 public class BmiCalculator {
 
-    public static class BmiVysledek {
+    public static class BmiResult {
         public double bmi;
-        public String slovniHodnoceni;
+        public String verbalEvaluation;
 
-        public BmiVysledek(double bmi, String slovniHodnoceni) {
+        public BmiResult(double bmi, String verbalEvaluation) {
             this.bmi = bmi;
-            this.slovniHodnoceni = slovniHodnoceni;
+            this.verbalEvaluation = verbalEvaluation;
         }
     }
 
-    public static BmiVysledek spocitejBmi() {
-        String jmeno = "";
-        int rokNarozeni = 2000;
-        double vyskaCm = 0;
-        String pohlavi = "Not entered";
-        double vahaKg = 0;
+    /**
+     * Performs the full lifecycle of fetching user metrics and calculating the current BMI.
+     * Parses profile data for dimensions, locates the appropriate weight data point,
+     * handles missing-data safeguards, computes chronological age, and triggers categorization.
+     *
+     * @return A populated {@link BmiResult} object containing the final stats, or an empty result with an error string.
+     */
+    public static BmiResult countBmi() {
+        String name = "";
+        int birthYear = 2000;
+        double heightCm = 0;
+        String gender = "Not entered";
+        double weightKg = 0;
 
 
         try {
             File fProfil = new File("profil.txt");
             if (fProfil.exists()) {
-                List<String> radky = Files.readAllLines(fProfil.toPath());
-                for (String radek : radky) {
-                    if (radek.startsWith("Year of birth: ")) {
-                        rokNarozeni = Integer.parseInt(radek.replace("Year of birth: ", "").trim());
+                List<String> lines = Files.readAllLines(fProfil.toPath());
+                for (String line : lines) {
+                    if (line.startsWith("Year of birth: ")) {
+                        birthYear = Integer.parseInt(line.replace("Year of birth: ", "").trim());
                     }
-                    if (radek.startsWith("Height: ")) {
-                        String v = radek.replace("Height: ", "").trim();
-                        if (!v.isEmpty()) vyskaCm = Double.parseDouble(v);
+                    if (line.startsWith("Height: ")) {
+                        String v = line.replace("Height: ", "").trim();
+                        if (!v.isEmpty()) heightCm = Double.parseDouble(v);
                     }
-                    if (radek.startsWith("Gender: ")) {
-                        pohlavi = radek.replace("Gender: ", "").trim();
+                    if (line.startsWith("Gender: ")) {
+                        gender = line.replace("Gender: ", "").trim();
                     }
                 }
             }
@@ -46,49 +53,33 @@ public class BmiCalculator {
             System.out.println("Unable to load profile data for BMI: " + e.getMessage());
         }
         //WEIGHT
-        /*try {
-            File fVahy = new File("vahy.txt");
-            if (fVahy.exists()) {
-                List<String> radky = Files.readAllLines(fVahy.toPath());
-                if (!radky.isEmpty()) {
-                    String posledniRadek = radky.get(radky.size() - 1);
-                    String[] casti = posledniRadek.split(";");
-                    if (casti.length == 2) {
-                        vahaKg = Double.parseDouble(casti[1]);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Chyba při čtení váhy pro BMI: " + e.getMessage());
-        }*/
-        // 2. Načtení váhy z vahy.txt (přednostně pro dnešní den)
         try {
-            File fVahy = new File("vahy.txt");
-            if (fVahy.exists()) {
-                List<String> radky = Files.readAllLines(fVahy.toPath());
+            File fWeight = new File("weights.txt");
+            if (fWeight.exists()) {
+                List<String> lines = Files.readAllLines(fWeight.toPath());
 
-                String dnesniDatum = LocalDate.now().toString();
-                double posledniZaznamenanaVaha = 0;
-                boolean nalezenaDnesniVaha = false;
+                String todaysDate = LocalDate.now().toString();
+                double lastRecordedWeight = 0;
+                boolean todayWeightFound = false;
 
-                for (String radek : radky) {
-                    String[] casti = radek.split(";");
-                    if (casti.length == 2) {
-                        String datumZeSouboru = casti[0].trim();
-                        double vahaZeSouboru = Double.parseDouble(casti[1].trim());
+                for (String line : lines) {
+                    String[] parts = line.split(";");
+                    if (parts.length == 2) {
+                        String dateFromFile = parts[0].trim();
+                        double weightFromFile = Double.parseDouble(parts[1].trim());
 
-                        posledniZaznamenanaVaha = vahaZeSouboru;
+                        lastRecordedWeight = weightFromFile;
 
-                        if (datumZeSouboru.equals(dnesniDatum)) {
-                            vahaKg = vahaZeSouboru;
-                            nalezenaDnesniVaha = true;
+                        if (dateFromFile.equals(todaysDate)) {
+                            weightKg = weightFromFile;
+                            todayWeightFound = true;
                             break;
                         }
                     }
                 }
 
-                if (!nalezenaDnesniVaha) {
-                    vahaKg = posledniZaznamenanaVaha;
+                if (!todayWeightFound) {
+                    weightKg = lastRecordedWeight;
                 }
             }
         } catch (Exception e) {
@@ -98,58 +89,51 @@ public class BmiCalculator {
 
 
 
-        if (vyskaCm <= 0 || vahaKg <= 0) {
-            return new BmiVysledek(0, "Required data (height/weight) is missing.");
+        if (heightCm <= 0 || weightKg <= 0) {
+            return new BmiResult(0, "Required data (height/weight) is missing.");
         }
 
 
-        double vyskaMetry = vyskaCm / 100.0;
-        double bmi = vahaKg / (vyskaMetry * vyskaMetry);
+        double heightMeters = heightCm / 100.0;
+        double bmi = weightKg / (heightMeters * heightMeters);
         bmi = Math.round(bmi * 10.0) / 10.0;
 
 
-        int vek = LocalDate.now().getYear() - rokNarozeni;
-        String hodnoceni = vyhodnotBmi(bmi, pohlavi, vek);
+        int age = LocalDate.now().getYear() - birthYear;
+        String evaluation = evaluateBmi(bmi, gender, age);
 
-        return new BmiVysledek(bmi, hodnoceni);
+        return new BmiResult(bmi, evaluation);
     }
 
-    /*private static String vyhodnotBmi(double bmi, String pohlavi, int vek) {
+    /**
+     * Determines the specific BMI classification segment for a user.
+     * Dynamically shifts evaluation thresholds using standard medical variances
+     * based on biological gender, and accounts for geriatric metabolism adjustments (+1.0 threshold)
+     * if the user's age is greater than 60.
+     *
+     * @param bmi    The rounded calculation value of the index.
+     * @param gender The specified bio-gender category ("Male"/"Female").
+     * @param age    The chronological age of the user in years.
+     * @return A string literal matching the result status ("Underweight", "Normal", "Overweight", "Obesity").
+     */
+    private static String evaluateBmi(double bmi, String gender, int age) {
 
-        double podvahaHranice = pohlavi.equalsIgnoreCase("Female") ? 18.5 : 19.0;
-        double normaHranice = pohlavi.equalsIgnoreCase("Female") ? 24.0 : 25.0;
-        double nadvahaHranice = pohlavi.equalsIgnoreCase("Female") ? 29.0 : 30.0;
 
+        double underweightLimit = gender.equalsIgnoreCase("Female") ? 18.5 : 20.0;
+        double normalLimit = gender.equalsIgnoreCase("Female") ? 24.0 : 25.0;
+        double overweightLimit = gender.equalsIgnoreCase("Female") ? 29.0 : 30.0;
 
-        if (vek > 60) {
-            podvahaHranice += 1.0;
-            normaHranice += 1.0;
-            nadvahaHranice += 1.0;
+        if (age > 60) {
+            underweightLimit += 1.0;
+            normalLimit += 1.0;
+            overweightLimit += 1.0;
         }
 
-        if (bmi < podvahaHranice) return "Podváha";
-        if (bmi < normaHranice) return "Normální váha";
-        if (bmi < nadvahaHranice) return "Nadváha";
-        return "Obezita";
-    }*/
-    private static String vyhodnotBmi(double bmi, String pohlavi, int vek) {
-
-
-        double podvahaHranice = pohlavi.equalsIgnoreCase("Female") ? 18.5 : 20.0;
-        double normaHranice = pohlavi.equalsIgnoreCase("Female") ? 24.0 : 25.0;
-        double nadvahaHranice = pohlavi.equalsIgnoreCase("Female") ? 29.0 : 30.0;
-
-        if (vek > 60) {
-            podvahaHranice += 1.0;
-            normaHranice += 1.0;
-            nadvahaHranice += 1.0;
-        }
-
-        if (bmi < podvahaHranice) {
+        if (bmi < underweightLimit) {
             return "Underweight";
-        } else if (bmi < normaHranice) {
+        } else if (bmi < normalLimit) {
             return "Normal";
-        } else if (bmi < nadvahaHranice) {
+        } else if (bmi < overweightLimit) {
             return "Overweight";
         } else {
             return "Obesity";

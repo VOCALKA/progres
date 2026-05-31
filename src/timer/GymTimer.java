@@ -16,10 +16,19 @@ public class GymTimer {
     private JButton btnStart;
     private JFrame frame;
 
+    /**
+     * Constructs a new GymTimer instance.
+     * Initializes the core window frame with the title "Timer".
+     */
     public GymTimer() {
         this.frame = new JFrame("Timer");
     }
 
+    /**
+     * Assembles and displays the graphical user interface for the gym timer.
+     * Configures layouts, registers action listeners for quick-add and control buttons,
+     * applies styles via {@link Custom}, and defines the background timer execution loop.
+     */
     public void showTimer(){
         //setLayout(new BorderLayout(10, 10));
         this.frame.setSize(500, 600);
@@ -112,11 +121,20 @@ public class GymTimer {
         });
     }
 
+    /**
+     * Adds a specified amount of seconds to the current remaining time and updates the display.
+     *
+     * @param seconds The number of seconds to be added to the countdown.
+     */
     private void addTime(int seconds) {
         timeLeft += seconds;
         updateDisplay();
     }
 
+    /**
+     * Toggles the timer running state.
+     * Stops the timer if it is active, or starts it if there is remaining countdown time.
+     */
     private void toggleTimer() {
         if (timer.isRunning()) {
             timer.stop();
@@ -127,11 +145,18 @@ public class GymTimer {
         }
     }
 
+    /**
+     * Forces the background timer thread to stop and reverts the start button label.
+     */
     private void stopTimer() {
         timer.stop();
         btnStart.setText("START");
     }
 
+    /**
+     * Resets the entire timer sequence by stopping execution, clearing out
+     * any remaining duration, and updating the visual display indicators back to zero.
+     */
     private void resetTimer() {
         timer.stop();
         timeLeft = 0;
@@ -139,6 +164,10 @@ public class GymTimer {
         updateDisplay();
     }
 
+    /**
+     * Calculates the individual minutes and seconds components from the total
+     * remaining time and formats them into a standardized MM:SS display string.
+     */
     private void updateDisplay() {
         int mins = timeLeft / 60;
         int secs = timeLeft % 60;

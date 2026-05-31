@@ -11,38 +11,43 @@ import javax.swing.Timer;
 
 public class RunPlan {
     private JFrame frame;
-    private JLabel labelCvik, labelCas, labelStatus;
-    private ArrayList<String[]> dataPlanu = new ArrayList<>();
-    private int aktualniIndex = 0;
-    private int zbyvajiciCas;
-    private boolean jeOdpocinek = false;
+    private JLabel exerciseLabel, timeLabel, labelStatus;
+    private ArrayList<String[]> planData = new ArrayList<>();
+    private int currentIndex = 0;
+    private int remainingTime;
+    private boolean isRest = false;
     private Timer timer;
 
+    /**
+     * Initiates the routine runtime cycle. Establishes path roots to the local storage folder,
+     * triggers file lookup dialogs, builds layout view grids, binds safety windows closure interceptors,
+     * loads baseline text values, and forces background clock threads into active states.
+     */
         public void start() {
 
-            String projektCesta = System.getProperty("user.dir");
-            File vychoziSlozka = new File(projektCesta, "resources");
+            String projectDirectory = System.getProperty("user.dir");
+            File defaultFolder = new File(projectDirectory, "resources");
 
 
-            if (!vychoziSlozka.exists()) {
-                vychoziSlozka.mkdirs();
+            if (!defaultFolder.exists()) {
+                defaultFolder.mkdirs();
             }
 
-            JFileChooser fileChooser = new JFileChooser(vychoziSlozka);
+            JFileChooser fileChooser = new JFileChooser(defaultFolder);
             fileChooser.setDialogTitle("Select a workout plan");
 
-            fileChooser.setCurrentDirectory(vychoziSlozka);
+            fileChooser.setCurrentDirectory(defaultFolder);
 
-            int vysledek = fileChooser.showOpenDialog(null);
+            int result = fileChooser.showOpenDialog(null);
 
-            if (vysledek == JFileChooser.APPROVE_OPTION) {
-                File vybranySoubor = fileChooser.getSelectedFile();
-                nactiData(vybranySoubor.getAbsolutePath());
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                loadData(selectedFile.getAbsolutePath());
             } else {
                 return;
             }
 
-            if (dataPlanu.isEmpty()) return;
+            if (planData.isEmpty()) return;
 
             frame = new JFrame("Workout running");
             frame.setSize(400, 400);
@@ -61,18 +66,18 @@ public class RunPlan {
             });
 
             labelStatus = new JLabel("Get ready", SwingConstants.CENTER);
-            labelCvik = new JLabel(dataPlanu.get(0)[0], SwingConstants.CENTER);
-            labelCas = new JLabel("0", SwingConstants.CENTER);
+            exerciseLabel = new JLabel(planData.get(0)[0], SwingConstants.CENTER);
+            timeLabel = new JLabel("0", SwingConstants.CENTER);
             //labelCas.setFont(new Font("Arial", Font.BOLD, 50));
 
-            Custom.cvikStyle(labelCvik);
-            Custom.casStyle(labelCas);
+            Custom.exerciseStyle(exerciseLabel);
+            Custom.timeStyle(timeLabel);
 
             frame.add(labelStatus);
-            frame.add(labelCvik);
-            frame.add(labelCas);
+            frame.add(exerciseLabel);
+            frame.add(timeLabel);
 
-            pripravDalsi(0);
+            prepareNext(0);
             startTimer();
 
 
@@ -82,49 +87,64 @@ public class RunPlan {
 
 
 
-            private void nactiData(String cesta) {
+    /**
+     * Streams workout rows from the storage disk into memory using file readers.
+     * Splits entries into sub-arrays using default delimiters to segregate properties.
+     *
+     * @param cesta The exact absolute path location string mapping to the target routine text file.
+     */
+            private void loadData(String cesta) {
         try (BufferedReader br = new BufferedReader(new FileReader(cesta))) {
-            String radek;
-            while ((radek = br.readLine()) != null) {
-                dataPlanu.add(radek.split(";"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                planData.add(line.split(";"));
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error loading file!");
         }
     }
 
+    /**
+     * Initializes and fires the internal repetitive countdown sequence.
+     * Subtracts integers from remaining intervals every second and handles layout synchronization.
+     */
     private void startTimer() {
         timer = new Timer(1000, e -> {
-            zbyvajiciCas--;
-            labelCas.setText(String.valueOf(zbyvajiciCas));
+            remainingTime--;
+            timeLabel.setText(String.valueOf(remainingTime));
 
-            if (zbyvajiciCas <= 0) {
-                prepniStav();
+            if (remainingTime <= 0) {
+                switchStatus();
             }
         });
         timer.start();
     }
 
-    private void prepniStav() {
-        if (!jeOdpocinek) {
-            jeOdpocinek = true;
+    /**
+     * Evaluates clock timeouts and flips app state attributes.
+     * Routes tracking flags to rest phases or steps pointers up to index upcoming routines,
+     * triggering pop-up completions alerts when arrays reach termination constraints.
+     */
+    private void switchStatus() {
+        if (!isRest) {
+            isRest = true;
 
-            String[] aktualniCvik = dataPlanu.get(aktualniIndex);
+            String[] currentExercise = planData.get(currentIndex);
 
-            if (aktualniCvik.length > 2 && !aktualniCvik[2].trim().isEmpty()) {
-                zbyvajiciCas = Integer.parseInt(aktualniCvik[2].trim());
+            if (currentExercise.length > 2 && !currentExercise[2].trim().isEmpty()) {
+                remainingTime = Integer.parseInt(currentExercise[2].trim());
             } else {
-                zbyvajiciCas = 0;
+                remainingTime = 0;
             }
 
             labelStatus.setText("Rest time");
             //labelStatus.setForeground(Color.BLUE);
             Custom.stavStyle(labelStatus, Color.BLUE);
         } else {
-            jeOdpocinek = false;
-            aktualniIndex++;
-            if (aktualniIndex < dataPlanu.size()) {
-                pripravDalsi(aktualniIndex);
+            isRest = false;
+            currentIndex++;
+            if (currentIndex < planData.size()) {
+                prepareNext(currentIndex);
             } else {
                 timer.stop();
                 labelStatus.setText("Completed!");
@@ -134,14 +154,20 @@ public class RunPlan {
         }
     }
 
-    private void pripravDalsi(int index) {
-        String[] radek = dataPlanu.get(index);
-        labelCvik.setText(radek[0]);
+    /**
+     * Refreshes dashboard rendering contexts with metrics belonging to the upcoming workout element index.
+     * Pulls array elements, sets countdown timers, updates phase messages to "Work!", and alters visual alerts.
+     *
+     * @param index The target position array pointer inside the root data tracker cache.
+     */
+    private void prepareNext(int index) {
+        String[] line = planData.get(index);
+        exerciseLabel.setText(line[0]);
 
-        if (radek.length > 1 && !radek[1].trim().isEmpty()) {
-            zbyvajiciCas = Integer.parseInt(radek[1].trim());
+        if (line.length > 1 && !line[1].trim().isEmpty()) {
+            remainingTime = Integer.parseInt(line[1].trim());
         } else {
-            zbyvajiciCas = 0;
+            remainingTime = 0;
         }
 
         labelStatus.setText("Work!");

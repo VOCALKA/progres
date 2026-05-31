@@ -13,20 +13,15 @@ public class Custom {
         button.setFocusPainted(false);
         button.setBorderPainted(false);
     }
-    /*public static void settingsButton(JButton button){
-        button.setBackground(new Color(149, 204, 152));
-        button.setForeground(Color.CYAN);
-        button.setFont(new Font("Arial", Font.BOLD, 20));
-
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-    }*/
     public static void startText(JLabel label){
         label.setForeground(new Color(0,0, 54));
         label.setFont(new Font("Arial", Font.BOLD, 30));
     }
     public static void background(JFrame frame){
-        frame.getContentPane().setBackground(new Color(169, 224, 255));
+        frame.getContentPane().setBackground(new Color(
+                169,
+                224,
+                255));
     }
 
     public static void streakStyle(JLabel label, int streakHodnota) {
@@ -37,11 +32,11 @@ public class Custom {
             label.setForeground(Color.GRAY);
         }
     }
-    public static void cvikStyle(JLabel label) {
+    public static void exerciseStyle(JLabel label) {
         label.setFont(new Font("Arial", Font.PLAIN, 28));
         label.setForeground(new Color(0, 0, 54));
     }
-    public static void casStyle(JLabel label) {
+    public static void timeStyle(JLabel label) {
         label.setFont(new Font("Arial", Font.BOLD, 70));
         label.setForeground(Color.BLACK);
     }
@@ -49,6 +44,52 @@ public class Custom {
         label.setFont(new Font("Arial", Font.BOLD, 40));
         label.setForeground(barvaTextu);
     }
+    //
+    public static void bmiNumberStyle(JLabel label) {
+        label.setFont(new Font("Arial", Font.BOLD, 60));
+    }
 
+    public static void bmiTextStyle(JLabel label) {
+        label.setFont(new Font("Arial", Font.BOLD, 22));
+    }
 
+    public static void bmiWeightUsedStyle(JLabel label) {
+        label.setFont(new Font("Arial", Font.PLAIN, 16));
+        label.setForeground(Color.GRAY);
+    }
+
+    public static void calorieNumberStyle(JLabel label) {
+        label.setFont(new Font("Arial", Font.BOLD, 45));
+        label.setForeground(new Color(154, 17, 34)); // Tmavě červená
+    }
+
+    public static void macroStyle(JLabel label, String type) {
+        label.setFont(new Font("Arial", Font.BOLD, 16));
+        switch (type.toLowerCase()) {
+            case "protein":
+                label.setForeground(new Color(70, 130, 180)); // Modrá
+                break;
+            case "carbs":
+                label.setForeground(new Color(218, 165, 32)); // Zlatá/Žlutá
+                break;
+            case "fats":
+                label.setForeground(new Color(46, 139, 87));  // Zelená
+                break;
+        }
+    }
+    /*public static Color getBmiColor(String status) {
+        if (status == null) return Color.BLACK;
+        switch (status) {
+            case "Normal": return new Color(34, 139, 34);
+            case "Underweight": return new Color(255, 140, 0);
+            case "Overweight": return new Color(255, 69, 0);
+            case "Obesity": return Color.RED;
+            default: return Color.BLACK;
+        }
+    }*/
+
+    public static void styleTab(JTabbedPane tabbedPane, int tabIndex) {
+        tabbedPane.setBackgroundAt(tabIndex, new Color(154, 17, 34));
+        tabbedPane.setForegroundAt(tabIndex, Color.WHITE);
+    }
 }

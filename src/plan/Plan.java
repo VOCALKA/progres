@@ -14,13 +14,18 @@ import custom.Custom;
 
 public class Plan {
     private JFrame frame;
-    private ArrayList<String> cvikySeznam = new ArrayList<>();
-    private JTextField nazevPlanuField, cvikField, casField, restField;
+    private ArrayList<String> exerciseList = new ArrayList<>();
+    private JTextField planNameField, exerciseField, timeField, restField;
 
     public Plan() {
         this.frame = new JFrame("Workout Plan Creation");
     }
 
+    /**
+     * Assembles and displays the graphical user interface components for routine configuration.
+     * Builds input fields, hooks up dynamic form validation mechanics, applies styles via {@link Custom},
+     * registers mouse click event bounds on the visual list, and wires up route execution triggers.
+     */
     public void showPlan() {
         frame.setSize(500, 600);
         frame.setLayout(new BorderLayout(10, 10));
@@ -33,21 +38,21 @@ public class Plan {
         JPanel topPanel = new JPanel(new GridLayout(2, 1));
         topPanel.setOpaque(false);
         topPanel.add(new JLabel("Plan name:", SwingConstants.CENTER));
-        nazevPlanuField = new JTextField();
-        topPanel.add(nazevPlanuField);
+        planNameField = new JTextField();
+        topPanel.add(planNameField);
 
 
         JPanel inputPanel = new JPanel(new GridLayout(6, 1, 5, 5));
         inputPanel.setOpaque(false);
 
-        cvikField = new JTextField();
-        casField = new JTextField();
+        exerciseField = new JTextField();
+        timeField = new JTextField();
         restField = new JTextField();
 
         inputPanel.add(new JLabel("Exercise name:"));
-        inputPanel.add(cvikField);
+        inputPanel.add(exerciseField);
         inputPanel.add(new JLabel("Exercise duration (seconds):"));
-        inputPanel.add(casField);
+        inputPanel.add(timeField);
         inputPanel.add(new JLabel("Rest time (seconds):"));
         inputPanel.add(restField);
 
@@ -66,39 +71,29 @@ public class Plan {
         JButton btnSave = new JButton("Save");
         JButton btnHome = new JButton("Home");
 
-        /*btnAdd.addActionListener(e -> {
-            String radek = cvikField.getText() + ";" + casField.getText() + ";" + restField.getText();
-            cvikySeznam.add(radek);
-            listModel.addElement(cvikField.getText() + " (" + casField.getText() + "s + " + restField.getText() + "s)");
-
-
-            cvikField.setText("");
-            casField.setText("");
-            restField.setText("");
-        });*/
         btnAdd.addActionListener(e -> {
-            String nazevCviku = cvikField.getText().trim();
-            String casText = casField.getText().trim();
+            String exerciseName = exerciseField.getText().trim();
+            String timeText = timeField.getText().trim();
             String restText = restField.getText().trim();
 
-             if (nazevCviku.isEmpty() || casText.isEmpty() || restText.isEmpty()) {
+             if (exerciseName.isEmpty() || timeText.isEmpty() || restText.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Please fill in all exercise fields.", "Error",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            if (!casText.matches("\\d+") || !restText.matches("\\d+")) {
+            if (!timeText.matches("\\d+") || !restText.matches("\\d+")) {
                 JOptionPane.showMessageDialog(frame, "Please enter numbers only in the time fields!",
                         "Input error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            String radek = nazevCviku + ";" + casText + ";" + restText;
-            cvikySeznam.add(radek);
-            listModel.addElement(nazevCviku + " (" + casText + "s + " + restText + "s)");
+            String line = exerciseName + ";" + timeText + ";" + restText;
+            exerciseList.add(line);
+            listModel.addElement(exerciseName + " (" + timeText + "s + " + restText + "s)");
 
-            cvikField.setText("");
-            casField.setText("");
+            exerciseField.setText("");
+            timeField.setText("");
             restField.setText("");
         });
 
@@ -109,7 +104,7 @@ public class Plan {
                     int index = jList.locationToIndex(e.getPoint());
                     if (index >= 0) {
                         listModel.remove(index);
-                        cvikySeznam.remove(index);
+                        exerciseList.remove(index);
                     }
                 }
             }
@@ -121,7 +116,7 @@ public class Plan {
 
 
         btnSave.addActionListener(e -> {
-            ulozDoSouboru();
+            saveToFile();
             //frame.dispose();
             //new App().showApp();
         });
@@ -150,38 +145,43 @@ public class Plan {
         frame.setVisible(true);
     }
 
-    private void ulozDoSouboru() {
-        if (cvikySeznam.isEmpty()) {
+    /**
+     * Serializes the configured collection of exercise data elements into a dedicated text file.
+     * Targets local directory destinations, resolves naming conflicts gracefully by appending numeric incremental
+     * indices (e.g. plan1, plan2) to block metadata loss, and writes data chunks with default system line separation feeds.
+     */
+    private void saveToFile() {
+        if (exerciseList.isEmpty()) {
             JOptionPane.showMessageDialog(frame,
                     "Cannot save an empty plan! Please add some exercises first!", "Saving error",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String nazev = nazevPlanuField.getText().trim();
-        if (nazev.isEmpty()) nazev = "unnamed_plan";
+        String title = planNameField.getText().trim();
+        if (title.isEmpty()) title = "unnamed_plan";
 
         File adresar = new File("resources");
         if (!adresar.exists()) {
             adresar.mkdirs();
         }
 
-        File soubor = new File(adresar, nazev + ".txt");
+        File file = new File(adresar, title + ".txt");
 
-        if (soubor.exists()) {
-            int pocitadlo = 1;
-            while (soubor.exists()) {
-                soubor = new File(adresar, nazev + pocitadlo + ".txt");
-                pocitadlo++;
+        if (file.exists()) {
+            int counter = 1;
+            while (file.exists()) {
+                file = new File(adresar, title + counter + ".txt");
+                counter++;
             }
-            nazev = soubor.getName().replace(".txt", "");
+            title = file.getName().replace(".txt", "");
         }
 
-        try (FileWriter writer = new FileWriter(soubor)) {
-            for (String s : cvikySeznam) {
+        try (FileWriter writer = new FileWriter(file)) {
+            for (String s : exerciseList) {
                 writer.write(s + System.lineSeparator());
             }
-            JOptionPane.showMessageDialog(frame, "Plan '" + nazev + "' saved to the resources folder!");
+            JOptionPane.showMessageDialog(frame, "Plan '" + title + "' saved to the resources folder!");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, "Error saving: " + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);

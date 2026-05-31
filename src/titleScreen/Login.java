@@ -13,6 +13,11 @@ public class Login extends JFrame {
     private JPasswordField fieldPassword = new JPasswordField(20);
     private JButton buttonLogin = new JButton("Login");
 
+    /**
+     * Constructs a new Login frame.
+     * Assembles the input form components using a {@link GridBagLayout}, defines window spacing,
+     * and sets up event listeners for both button submission and the Enter-key trigger on the password field.
+     */
     public Login() {
         super("LOGIN");
 
@@ -49,7 +54,7 @@ public class Login extends JFrame {
             String password = new String(fieldPassword.getPassword());
 
 
-            if (username.equals("a") && password.equals("1")) {
+            if (username.equals("") && password.equals("")) {
                 this.dispose();
                 new App().showApp();
             } else {

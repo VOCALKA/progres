@@ -8,6 +8,11 @@ public class LoadingScreen {
         frame = new JFrame("loading");
 
     }
+    /**
+     * Assembles the graphical interface for the loading screen and makes it visible.
+     * Configures a fixed non-resizable viewport dimension, centers it on screen, constructs the layout grid
+     * housing the {@link JProgressBar} and status label, and instantiates and executes the {@link LoadingWorker}.
+     */
     public void show() {
         frame.setSize(400, 150);
         frame.setLayout(new BorderLayout());

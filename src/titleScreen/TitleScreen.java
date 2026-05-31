@@ -9,11 +9,22 @@ import java.awt.*;
 public class TitleScreen {
     private JFrame frame;
 
+    /**
+     * Constructs a new TitleScreen.
+     * Initializes the main window frame with the title "PROGRES" and
+     * automatically triggers the UI creation and visibility.
+     */
     public TitleScreen() {
         this.frame = new JFrame("PROGRES");
         showTitleScreen();
     }
 
+    /**
+     * Builds and displays the graphical user interface for the title screen.
+     * Configures frame sizing, centers it on screen, applies custom background,
+     * adds the stylized main logo text, attaches a rounded "LOG IN" button,
+     * and sets up the action listener to transition to the {@link Login} window.
+     */
     public void showTitleScreen(){
         this.frame.setSize(500, 500);
         this.frame.setLayout(new BorderLayout());
