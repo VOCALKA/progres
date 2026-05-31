@@ -29,7 +29,7 @@ public class RunPlan {
             }
 
             JFileChooser fileChooser = new JFileChooser(vychoziSlozka);
-            fileChooser.setDialogTitle("Vyberte plán tréninku");
+            fileChooser.setDialogTitle("Select a workout plan");
 
             fileChooser.setCurrentDirectory(vychoziSlozka);
 
@@ -44,7 +44,7 @@ public class RunPlan {
 
             if (dataPlanu.isEmpty()) return;
 
-            frame = new JFrame("TRÉNINK BĚŽÍ");
+            frame = new JFrame("Workout running");
             frame.setSize(400, 400);
             frame.setLayout(new GridLayout(3, 1));
             frame.setLocationRelativeTo(null);
@@ -60,7 +60,7 @@ public class RunPlan {
                 }
             });
 
-            labelStatus = new JLabel("PŘIPRAV SE", SwingConstants.CENTER);
+            labelStatus = new JLabel("Get ready", SwingConstants.CENTER);
             labelCvik = new JLabel(dataPlanu.get(0)[0], SwingConstants.CENTER);
             labelCas = new JLabel("0", SwingConstants.CENTER);
             //labelCas.setFont(new Font("Arial", Font.BOLD, 50));
@@ -89,7 +89,7 @@ public class RunPlan {
                 dataPlanu.add(radek.split(";"));
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Chyba při načítání souboru!");
+            JOptionPane.showMessageDialog(null, "Error loading file!");
         }
     }
 
@@ -117,7 +117,7 @@ public class RunPlan {
                 zbyvajiciCas = 0;
             }
 
-            labelStatus.setText("ODPOČINEK");
+            labelStatus.setText("Rest time");
             //labelStatus.setForeground(Color.BLUE);
             Custom.stavStyle(labelStatus, Color.BLUE);
         } else {
@@ -127,8 +127,8 @@ public class RunPlan {
                 pripravDalsi(aktualniIndex);
             } else {
                 timer.stop();
-                labelStatus.setText("HOTOVO!");
-                JOptionPane.showMessageDialog(frame, "Trénink dokončen!");
+                labelStatus.setText("Completed!");
+                JOptionPane.showMessageDialog(frame, "Workout completed!");
                 frame.dispose();
             }
         }
@@ -144,7 +144,7 @@ public class RunPlan {
             zbyvajiciCas = 0;
         }
 
-        labelStatus.setText("CVIČ!");
+        labelStatus.setText("Work!");
         //labelStatus.setForeground(Color.RED);
         Custom.stavStyle(labelStatus, Color.RED);
     }

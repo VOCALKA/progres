@@ -16,7 +16,7 @@ public class LoadingWorker extends SwingWorker<Void, int[]> {
         this.frame = frame;
     }
 
-    private String[] steps = {"NACITANI DAT", "AKTUALIZACE PROFILU", "PRIPRAVUJEME PRO VAS", "HOTOVO"};
+    private String[] steps = {"LOADING DATA", "UPDATING PROFILE", "GETTING READY", "DONE"};
 
     /*@Override
     protected Void doInBackground() throws Exception {
@@ -41,13 +41,6 @@ public class LoadingWorker extends SwingWorker<Void, int[]> {
         return null;
     }
 
-
-    /*@Override
-    protected void process(List<int[]> chunks) {
-        int[] last = chunks.get(chunks.size() -1);
-        progress.setValue(last[0]);
-        status.setText(steps[last[1]]);
-    }*/
     @Override
     protected void process(List<int[]> chunks) {
         int[] last = chunks.get(chunks.size() - 1);

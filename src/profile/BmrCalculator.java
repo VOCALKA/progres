@@ -20,7 +20,7 @@ public class BmrCalculator {
     public static BmrVysledek spocitejBmr() {
         int rokNarozeni = 2000;
         double vyskaCm = 0;
-        String pohlavi = "Nezadáno";
+        String pohlavi = "Not entered";
         double vahaKg = 0;
 
 
@@ -29,11 +29,11 @@ public class BmrCalculator {
             if (fProfil.exists()) {
                 List<String> radky = Files.readAllLines(fProfil.toPath());
                 for (String radek : radky) {
-                    if (radek.startsWith("Rok narozeni: ")) {
-                        rokNarozeni = Integer.parseInt(radek.replace("Rok narozeni: ", "").trim());
+                    if (radek.startsWith("Year of birth: ")) {
+                        rokNarozeni = Integer.parseInt(radek.replace("Year of birth: ", "").trim());
                     }
-                    if (radek.startsWith("Vyska: ")) {
-                        String v = radek.replace("Vyska: ", "").trim();
+                    if (radek.startsWith("Height: ")) {
+                        String v = radek.replace("Height: ", "").trim();
                         if (!v.isEmpty()) vyskaCm = Double.parseDouble(v);
                     }
                     if (radek.startsWith("Gender: ")) {
@@ -42,7 +42,7 @@ public class BmrCalculator {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Chyba při čtení profilu pro BMR: " + e.getMessage());
+            System.out.println("Unable to load profile data for BMR: " + e.getMessage());
         }
 
         try {
@@ -72,7 +72,7 @@ public class BmrCalculator {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Chyba při čtení váhy pro BMR: " + e.getMessage());
+            System.out.println("Unable to load weight for BMR: " + e.getMessage());
         }
 
         if (vyskaCm <= 0 || vahaKg <= 0) {

@@ -14,7 +14,7 @@ public class LoadingScreen {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
 
-        JLabel status = new JLabel("nacitani aplikace", JLabel.CENTER);
+        JLabel status = new JLabel("Loading...", JLabel.CENTER);
         JProgressBar progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true);
 

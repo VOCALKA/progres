@@ -21,7 +21,7 @@ public class BmiCalculator {
         String jmeno = "";
         int rokNarozeni = 2000;
         double vyskaCm = 0;
-        String pohlavi = "Nezadáno";
+        String pohlavi = "Not entered";
         double vahaKg = 0;
 
 
@@ -30,11 +30,11 @@ public class BmiCalculator {
             if (fProfil.exists()) {
                 List<String> radky = Files.readAllLines(fProfil.toPath());
                 for (String radek : radky) {
-                    if (radek.startsWith("Rok narozeni: ")) {
-                        rokNarozeni = Integer.parseInt(radek.replace("Rok narozeni: ", "").trim());
+                    if (radek.startsWith("Year of birth: ")) {
+                        rokNarozeni = Integer.parseInt(radek.replace("Year of birth: ", "").trim());
                     }
-                    if (radek.startsWith("Vyska: ")) {
-                        String v = radek.replace("Vyska: ", "").trim();
+                    if (radek.startsWith("Height: ")) {
+                        String v = radek.replace("Height: ", "").trim();
                         if (!v.isEmpty()) vyskaCm = Double.parseDouble(v);
                     }
                     if (radek.startsWith("Gender: ")) {
@@ -43,7 +43,7 @@ public class BmiCalculator {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Chyba při čtení profilu pro BMI: " + e.getMessage());
+            System.out.println("Unable to load profile data for BMI: " + e.getMessage());
         }
         //WEIGHT
         /*try {
@@ -92,14 +92,14 @@ public class BmiCalculator {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Chyba při čtení váhy pro BMI: " + e.getMessage());
+            System.out.println("Unable to load weight for BMI: " + e.getMessage());
         }
         //
 
 
 
         if (vyskaCm <= 0 || vahaKg <= 0) {
-            return new BmiVysledek(0, "Chybí data (výška nebo váha) pro výpočet.");
+            return new BmiVysledek(0, "Required data (height/weight) is missing.");
         }
 
 
@@ -146,13 +146,13 @@ public class BmiCalculator {
         }
 
         if (bmi < podvahaHranice) {
-            return "Podváha";
+            return "Underweight";
         } else if (bmi < normaHranice) {
-            return "Normální váha";
+            return "Normal";
         } else if (bmi < nadvahaHranice) {
-            return "Nadváha";
+            return "Overweight";
         } else {
-            return "Obezita";
+            return "Obesity";
         }
     }
 

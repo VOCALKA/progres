@@ -53,8 +53,8 @@ public class Login extends JFrame {
                 this.dispose();
                 new App().showApp();
             } else {
-                JOptionPane.showMessageDialog(this, "Špatné jméno nebo heslo!",
-                        "Chyba", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Wrong username or password!",
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 

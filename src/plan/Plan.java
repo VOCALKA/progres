@@ -18,7 +18,7 @@ public class Plan {
     private JTextField nazevPlanuField, cvikField, casField, restField;
 
     public Plan() {
-        this.frame = new JFrame("TVORBA PLÁNU");
+        this.frame = new JFrame("Workout Plan Creation");
     }
 
     public void showPlan() {
@@ -32,7 +32,7 @@ public class Plan {
 
         JPanel topPanel = new JPanel(new GridLayout(2, 1));
         topPanel.setOpaque(false);
-        topPanel.add(new JLabel("Název plánu:", SwingConstants.CENTER));
+        topPanel.add(new JLabel("Plan name:", SwingConstants.CENTER));
         nazevPlanuField = new JTextField();
         topPanel.add(nazevPlanuField);
 
@@ -44,11 +44,11 @@ public class Plan {
         casField = new JTextField();
         restField = new JTextField();
 
-        inputPanel.add(new JLabel("Název cviku:"));
+        inputPanel.add(new JLabel("Exercise name:"));
         inputPanel.add(cvikField);
-        inputPanel.add(new JLabel("Doba cvičení (sekundy):"));
+        inputPanel.add(new JLabel("Exercise duration (seconds):"));
         inputPanel.add(casField);
-        inputPanel.add(new JLabel("Doba odpočinku (sekundy):"));
+        inputPanel.add(new JLabel("Rest time (seconds):"));
         inputPanel.add(restField);
 
 
@@ -61,9 +61,9 @@ public class Plan {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 4, 10, 10));
         buttonPanel.setOpaque(false);
 
-        JButton btnAdd = new JButton("Přidat cvik");
-        JButton btnRun = new JButton("Načíst plán");
-        JButton btnSave = new JButton("Uložit");
+        JButton btnAdd = new JButton("Add");
+        JButton btnRun = new JButton("Load");
+        JButton btnSave = new JButton("Save");
         JButton btnHome = new JButton("Home");
 
         /*btnAdd.addActionListener(e -> {
@@ -82,12 +82,14 @@ public class Plan {
             String restText = restField.getText().trim();
 
              if (nazevCviku.isEmpty() || casText.isEmpty() || restText.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Vyplňte prosím všechna pole pro cvik.", "Chyba", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Please fill in all exercise fields.", "Error",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             if (!casText.matches("\\d+") || !restText.matches("\\d+")) {
-                JOptionPane.showMessageDialog(frame, "Do polí pro čas musíte zadat pouze čísla!", "Chyba zadání", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Please enter numbers only in the time fields!",
+                        "Input error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -150,12 +152,14 @@ public class Plan {
 
     private void ulozDoSouboru() {
         if (cvikySeznam.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Nelze uložit prázdný plán! Přidejte nejprve nějaké cviky.", "Chyba ukládání", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(frame,
+                    "Cannot save an empty plan! Please add some exercises first!", "Saving error",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         String nazev = nazevPlanuField.getText().trim();
-        if (nazev.isEmpty()) nazev = "plan_bez_nazvu";
+        if (nazev.isEmpty()) nazev = "unnamed_plan";
 
         File adresar = new File("resources");
         if (!adresar.exists()) {
@@ -177,9 +181,10 @@ public class Plan {
             for (String s : cvikySeznam) {
                 writer.write(s + System.lineSeparator());
             }
-            JOptionPane.showMessageDialog(frame, "Plán '" + nazev + "' byl uložen do složky resources!");
+            JOptionPane.showMessageDialog(frame, "Plan '" + nazev + "' saved to the resources folder!");
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(frame, "Chyba při ukládání: " + e.getMessage(), "Chyba", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Error saving: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }

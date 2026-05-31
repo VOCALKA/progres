@@ -19,25 +19,6 @@ public class Profile {
         this.frame = new JFrame("Fitness Profil");
     }
 
-
-    /*private List<Double> nactiVahyZeSouboru() {
-        List<Double> vahy = new ArrayList<>();
-        try {
-            java.io.File fVahy = new java.io.File("vahy.txt");
-            if (fVahy.exists()) {
-                List<String> radky = java.nio.file.Files.readAllLines(fVahy.toPath());
-                for (String radek : radky) {
-                    String[] casti = radek.split(";");
-                    if (casti.length == 2) {
-                        vahy.add(Double.parseDouble(casti[1]));
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return vahy;
-    }*/
     private List<profile.WeightChart.ZaznamVahy> nactiVahyZeSouboru() {
         List<profile.WeightChart.ZaznamVahy> vahy = new ArrayList<>();
 
@@ -164,9 +145,9 @@ public class Profile {
             if (fProfil.exists()) {
                 List<String> radky = java.nio.file.Files.readAllLines(fProfil.toPath());
                 for (String radek : radky) {
-                    if (radek.startsWith("Jmeno: ")) nacteneJmeno = radek.replace("Jmeno: ", "");
-                    if (radek.startsWith("Rok narozeni: ")) nactenyRok = Integer.parseInt(radek.replace("Rok narozeni: ", "").trim());
-                    if (radek.startsWith("Vyska: ")) heightField.setText(radek.replace("Vyska: ", "").trim());
+                    if (radek.startsWith("Name: ")) nacteneJmeno = radek.replace("Name: ", "");
+                    if (radek.startsWith("Year of birth: ")) nactenyRok = Integer.parseInt(radek.replace("Year of birth: ", "").trim());
+                    if (radek.startsWith("Height: ")) heightField.setText(radek.replace("Height: ", "").trim());
                     if (radek.startsWith("Gender: ")) {
                         if (radek.contains("Male")) male.setSelected(true);
                         else if (radek.contains("Female")) female.setSelected(true);
@@ -181,7 +162,7 @@ public class Profile {
                 nactenaVaha = (int) vsechnyVahy.get(vsechnyVahy.size() - 1).vaha();
             }
         } catch (Exception ex) {
-            System.out.println("Nepodařilo se načíst data: " + ex.getMessage());
+            System.out.println("Failed to load data: " + ex.getMessage());
         }
 
         nameField.setText(nacteneJmeno);
@@ -205,25 +186,6 @@ public class Profile {
         scrollGraph.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 
         //BMI
-        /*JPanel bmiPanel = new JPanel(new GridBagLayout());
-        bmiPanel.setOpaque(false);
-        GridBagConstraints gbcBmi = new GridBagConstraints();
-        gbcBmi.insets = new Insets(15, 15, 15, 15);
-        gbcBmi.gridx = 0;
-
-        //custom
-        JLabel bmiCisloLabel = new JLabel("--.-", SwingConstants.CENTER);
-        bmiCisloLabel.setFont(new Font("Arial", Font.BOLD, 60));
-        //custom
-        JLabel bmiSlovniLabel = new JLabel("Načítání...", SwingConstants.CENTER);
-        bmiSlovniLabel.setFont(new Font("Arial", Font.BOLD, 22));
-
-        gbcBmi.gridy = 0;
-        bmiPanel.add(new JLabel("VAŠE AKTUÁLNÍ BMI:", SwingConstants.CENTER), gbcBmi);
-        gbcBmi.gridy = 1;
-        bmiPanel.add(bmiCisloLabel, gbcBmi);
-        gbcBmi.gridy = 2;
-        bmiPanel.add(bmiSlovniLabel, gbcBmi);*/
 
         JPanel bmiPanel = new JPanel(new GridBagLayout());
         bmiPanel.setOpaque(false);
@@ -233,14 +195,14 @@ public class Profile {
 
         JLabel bmiCisloLabel = new JLabel("--.-", SwingConstants.CENTER);
         bmiCisloLabel.setFont(new Font("Arial", Font.BOLD, 60));
-        JLabel bmiSlovniLabel = new JLabel("Načítání...", SwingConstants.CENTER);
+        JLabel bmiSlovniLabel = new JLabel("Loading...", SwingConstants.CENTER);
         bmiSlovniLabel.setFont(new Font("Arial", Font.BOLD, 22));
         //JLabel bmiAktualniVahaLabel = new JLabel("Použitá váha: -- kg", SwingConstants.CENTER);
-        bmiAktualniVahaLabel = new JLabel("Použitá váha: -- kg", SwingConstants.CENTER);
+        bmiAktualniVahaLabel = new JLabel("Weight used: -- kg", SwingConstants.CENTER);
         bmiAktualniVahaLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         bmiAktualniVahaLabel.setForeground(Color.GRAY);
 
-        gbcBmi.gridy = 0; bmiPanel.add(new JLabel("VAŠE AKTUÁLNÍ BMI:", SwingConstants.CENTER), gbcBmi);
+        gbcBmi.gridy = 0; bmiPanel.add(new JLabel("YOUR CURRENT BMI:", SwingConstants.CENTER), gbcBmi);
         gbcBmi.gridy = 1; bmiPanel.add(bmiCisloLabel, gbcBmi);
         gbcBmi.gridy = 2; bmiPanel.add(bmiSlovniLabel, gbcBmi);
         gbcBmi.gridy = 3; bmiPanel.add(bmiAktualniVahaLabel, gbcBmi);
@@ -266,9 +228,9 @@ public class Profile {
         kalorieCisloLabel.setFont(new Font("Arial", Font.BOLD, 45));
         kalorieCisloLabel.setForeground(new Color(154, 17, 34));
 
-        JLabel bilkovinyLabel = new JLabel("Bílkoviny: -- g");
-        JLabel sacharidyLabel = new JLabel("Sacharidy: -- g");
-        JLabel tukyLabel = new JLabel("Tuky: -- g");
+        JLabel bilkovinyLabel = new JLabel("Proteins: -- g");
+        JLabel sacharidyLabel = new JLabel("Carbohydrates: -- g");
+        JLabel tukyLabel = new JLabel("Fats: -- g");
 
         Font makroFont = new Font("Arial", Font.BOLD, 16);
         bilkovinyLabel.setFont(makroFont); bilkovinyLabel.setForeground(new Color(70, 130, 180));
@@ -276,7 +238,7 @@ public class Profile {
         tukyLabel.setFont(makroFont); tukyLabel.setForeground(new Color(46, 139, 87));
 
         gbcKal.gridx = 0; gbcKal.gridy = 0; gbcKal.gridwidth = 2;
-        kaloriePanel.add(new JLabel("DOPORUČENÝ DENNÍ PŘÍJEM:", SwingConstants.CENTER), gbcKal);
+        kaloriePanel.add(new JLabel("RECOMMENDED DAILY INTAKE:", SwingConstants.CENTER), gbcKal);
         gbcKal.gridy = 1;
         kaloriePanel.add(kalorieCisloLabel, gbcKal);
 
@@ -284,13 +246,13 @@ public class Profile {
         kaloriePanel.add(new JLabel("--------------------------------------------------", SwingConstants.CENTER), gbcKal);
 
         gbcKal.gridwidth = 1;
-        gbcKal.gridy = 3; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Bílkoviny (30%):"), gbcKal);
+        gbcKal.gridy = 3; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Proteins (30%):"), gbcKal);
         gbcKal.gridx = 1; kaloriePanel.add(bilkovinyLabel, gbcKal);
 
-        gbcKal.gridy = 4; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Sacharidy (45%):"), gbcKal);
+        gbcKal.gridy = 4; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Carbohydrates (45%):"), gbcKal);
         gbcKal.gridx = 1; kaloriePanel.add(sacharidyLabel, gbcKal);
 
-        gbcKal.gridy = 5; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Tuky (25%):"), gbcKal);
+        gbcKal.gridy = 5; gbcKal.gridx = 0; kaloriePanel.add(new JLabel("Fats (25%):"), gbcKal);
         gbcKal.gridx = 1; kaloriePanel.add(tukyLabel, gbcKal);
         //END BMR
         //
@@ -317,15 +279,15 @@ public class Profile {
             String jmeno = nameField.getText();
             int rokNarozeni = (int) yearSpinner.getValue();
             String vyska = heightField.getText();
-            String pohlavi = male.isSelected() ? "Male" : (female.isSelected() ? "Female" : "Nezadáno");
+            String pohlavi = male.isSelected() ? "Male" : (female.isSelected() ? "Female" : "Not entered");
             int vaha = weightSlider.getValue();
             String dnesniDatum = java.time.LocalDate.now().toString();
 
             try {
                 try (java.io.FileWriter fw = new java.io.FileWriter("profil.txt")) {
-                    fw.write("Jmeno: " + jmeno + "\n" +
-                            "Rok narozeni: " + rokNarozeni + "\n" +
-                            "Vyska: " + vyska + "\n" +
+                    fw.write("Name: " + jmeno + "\n" +
+                            "Year of birth: " + rokNarozeni + "\n" +
+                            "Height: " + vyska + "\n" +
                             "Gender: " + pohlavi);
                 }
 
@@ -349,10 +311,10 @@ public class Profile {
 
                 graphPanel.setWeights(nactiVahyZeSouboru());
 
-                JOptionPane.showMessageDialog(frame, "Profil i váha byly uloženy!");
+                JOptionPane.showMessageDialog(frame, "Profile saved!");
             } catch (java.io.IOException ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(frame, "Chyba při ukládání: " + ex.getMessage());
+                JOptionPane.showMessageDialog(frame, "Error saving profile: " + ex.getMessage());
             }
         });
 
@@ -389,7 +351,7 @@ public class Profile {
         tabbedPane.addChangeListener(e -> {
             if (tabbedPane.getSelectedIndex() == 2) {
 
-                bmiAktualniVahaLabel.setText("Použitá váha: " + weightSlider.getValue() + " kg");
+                bmiAktualniVahaLabel.setText("Weight used: " + weightSlider.getValue() + " kg");
 
                 BmiCalculator.BmiVysledek vysledek = BmiCalculator.spocitejBmi();
                 if (vysledek.bmi > 0) {
@@ -401,7 +363,7 @@ public class Profile {
                     bmiSlovniLabel.setForeground(barva);
                 } else {
                     bmiCisloLabel.setText("??.?");
-                    bmiSlovniLabel.setText("CHYBÍ DATA V PROFILU!");
+                    bmiSlovniLabel.setText("Missing profile data!");
                     bmiSlovniLabel.setForeground(Color.GRAY);
                 }
             }
@@ -438,10 +400,10 @@ public class Profile {
     private Color ziskejBarvuBmi(String stav) {
         if (stav == null) return Color.BLACK;
         switch (stav) {
-            case "Normální váha": return new Color(34, 139, 34);
-            case "Podváha": return new Color(255, 140, 0);
-            case "Nadváha": return new Color(255, 69, 0);
-            case "Obezita": return Color.RED;
+            case "Normal": return new Color(34, 139, 34);
+            case "Underweight": return new Color(255, 140, 0);
+            case "Overweight": return new Color(255, 69, 0);
+            case "Obesity": return Color.RED;
             default: return Color.BLACK;
         }
     }

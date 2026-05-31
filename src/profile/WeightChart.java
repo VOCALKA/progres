@@ -109,7 +109,7 @@ public class WeightChart extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (weights == null || weights.isEmpty()) {
-            g.drawString("Nejsou k dispozici žádná data pro graf.", 50, 50);
+            g.drawString("No chart data available.", 50, 50);
             return;
         }
 

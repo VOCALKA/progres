@@ -38,7 +38,7 @@ public class App {
 
         int aktualniStreak = StreakManager.getWeightStreak();
 
-        streakLabel = new JLabel("<html>&#128293; " + aktualniStreak + " DNÍ STREAK</html>", SwingConstants.CENTER);
+        streakLabel = new JLabel("<html>&#128293; " + aktualniStreak + " DAY STREAK</html>", SwingConstants.CENTER);
         Custom.streakStyle(streakLabel, aktualniStreak);
 
         centerPanel.add(streakLabel, new GridBagConstraints());
@@ -83,22 +83,8 @@ public class App {
             new CalorieTracker().showTracker(); // Otevře kalorickou tabulku s API
         });
 
-        /*RoundedButton button4 = new RoundedButton("Start plan");
-        Custom.startButton(button4);
-        button4.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            int returnVal = chooser.showOpenDialog(null);
-            if(returnVal == JFileChooser.APPROVE_OPTION) {
-                RunPlan r = new RunPlan();
-                r.start(chooser.getSelectedFile().getAbsolutePath());
-            }
-        });*/
-
-
-
         clock();
 
-        //buttonPanel.add(button4);
         buttonPanel.add(buttonCalories);
         buttonPanel.add(button3);
         buttonPanel.add(button2);
