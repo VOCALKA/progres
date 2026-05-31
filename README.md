@@ -40,3 +40,15 @@ The application utilizes the Swing graphical user interface, saves data to text 
 *   **Java 23** (Swing for the graphical user interface)
 *   **Maven** (Dependency management)
 *   **OpenFoodFacts Java Wrapper** (0.9.3) – integration of the food database
+
+*   ## How to Run the Application
+
+You can run the compiled application directly from the terminal using the following command:
+
+```bash
+java -jar out/artifacts/progres_jar/progres.jar
+```
+
+### Prerequisites
+* Make sure you have **Java (JDK)** installed on your machine.
+* Open your terminal inside the root directory of the project (`progres`) before running the command.
