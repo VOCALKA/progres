@@ -37,6 +37,18 @@ public class Custom {
             label.setForeground(Color.GRAY);
         }
     }
+    public static void cvikStyle(JLabel label) {
+        label.setFont(new Font("Arial", Font.PLAIN, 28));
+        label.setForeground(new Color(0, 0, 54));
+    }
+    public static void casStyle(JLabel label) {
+        label.setFont(new Font("Arial", Font.BOLD, 70));
+        label.setForeground(Color.BLACK);
+    }
+    public static void stavStyle(JLabel label, Color barvaTextu) {
+        label.setFont(new Font("Arial", Font.BOLD, 40));
+        label.setForeground(barvaTextu);
+    }
 
 
 }

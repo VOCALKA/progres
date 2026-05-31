@@ -2,6 +2,8 @@ package plan;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -61,10 +63,10 @@ public class Plan {
 
         JButton btnAdd = new JButton("Přidat cvik");
         JButton btnRun = new JButton("Načíst plán");
-        JButton btnSave = new JButton("Uložit a zavřít");
+        JButton btnSave = new JButton("Uložit");
         JButton btnHome = new JButton("Home");
 
-        btnAdd.addActionListener(e -> {
+        /*btnAdd.addActionListener(e -> {
             String radek = cvikField.getText() + ";" + casField.getText() + ";" + restField.getText();
             cvikySeznam.add(radek);
             listModel.addElement(cvikField.getText() + " (" + casField.getText() + "s + " + restField.getText() + "s)");
@@ -73,17 +75,43 @@ public class Plan {
             cvikField.setText("");
             casField.setText("");
             restField.setText("");
+        });*/
+        btnAdd.addActionListener(e -> {
+            String nazevCviku = cvikField.getText().trim();
+            String casText = casField.getText().trim();
+            String restText = restField.getText().trim();
+
+             if (nazevCviku.isEmpty() || casText.isEmpty() || restText.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Vyplňte prosím všechna pole pro cvik.", "Chyba", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (!casText.matches("\\d+") || !restText.matches("\\d+")) {
+                JOptionPane.showMessageDialog(frame, "Do polí pro čas musíte zadat pouze čísla!", "Chyba zadání", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String radek = nazevCviku + ";" + casText + ";" + restText;
+            cvikySeznam.add(radek);
+            listModel.addElement(nazevCviku + " (" + casText + "s + " + restText + "s)");
+
+            cvikField.setText("");
+            casField.setText("");
+            restField.setText("");
         });
 
-        /*btnRun.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            int returnVal = chooser.showOpenDialog(null);
-            if(returnVal == JFileChooser.APPROVE_OPTION) {
-                RunPlan r = new RunPlan();
-                r.start(chooser.getSelectedFile().getAbsolutePath());
-            }
+        jList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = jList.locationToIndex(e.getPoint());
+                    if (index >= 0) {
+                        listModel.remove(index);
+                        cvikySeznam.remove(index);
+                    }
                 }
-                );*/
+            }
+        });
         btnRun.addActionListener(e -> {
             RunPlan r = new RunPlan();
             r.start();
@@ -92,8 +120,8 @@ public class Plan {
 
         btnSave.addActionListener(e -> {
             ulozDoSouboru();
-            frame.dispose();
-            new App().showApp();
+            //frame.dispose();
+            //new App().showApp();
         });
         btnHome.addActionListener(e -> {
             this.frame.dispose();
@@ -120,42 +148,12 @@ public class Plan {
         frame.setVisible(true);
     }
 
-    /*private void ulozDoSouboru() {
-        String nazev = nazevPlanuField.getText().trim();
-        if (nazev.isEmpty()) nazev = "plan_bez_nazvu";
-
-        try (FileWriter writer = new FileWriter(nazev + ".txt")) {
-            for (String s : cvikySeznam) {
-                writer.write(s + System.lineSeparator());
-            }
-            JOptionPane.showMessageDialog(frame, "Plán '" + nazev + "' byl uložen!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-    /*private void ulozDoSouboru() {
-        String nazev = nazevPlanuField.getText().trim();
-        if (nazev.isEmpty()) nazev = "plan_bez_nazvu";
-
-        File adresar = new File("resources");
-
-        if (!adresar.exists()) {
-            adresar.mkdirs();
-        }
-
-        File soubor = new File(adresar, nazev + ".txt");
-
-        try (FileWriter writer = new FileWriter(soubor)) {
-            for (String s : cvikySeznam) {
-                writer.write(s + System.lineSeparator());
-            }
-            JOptionPane.showMessageDialog(frame, "Plán '" + nazev + "' byl uložen do složky resources!");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(frame, "Chyba při ukládání: " + e.getMessage(), "Chyba", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-    }*/
     private void ulozDoSouboru() {
+        if (cvikySeznam.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Nelze uložit prázdný plán! Přidejte nejprve nějaké cviky.", "Chyba ukládání", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String nazev = nazevPlanuField.getText().trim();
         if (nazev.isEmpty()) nazev = "plan_bez_nazvu";
 

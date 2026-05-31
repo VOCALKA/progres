@@ -1,4 +1,7 @@
+package titleScreen;
+
 import app.App;
+
 
 import javax.swing.*;
 import java.awt.*;
