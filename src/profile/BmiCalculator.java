@@ -52,7 +52,7 @@ public class BmiCalculator {
         } catch (Exception e) {
             System.out.println("Unable to load profile data for BMI: " + e.getMessage());
         }
-        //WEIGHT
+
         try {
             File fWeight = new File("weights.txt");
             if (fWeight.exists()) {
@@ -85,7 +85,7 @@ public class BmiCalculator {
         } catch (Exception e) {
             System.out.println("Unable to load weight for BMI: " + e.getMessage());
         }
-        //
+
 
 
 

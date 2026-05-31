@@ -267,18 +267,15 @@ public class Profile {
 
         gbcKal.gridy = 5; gbcKal.gridx = 0; caloriesPanel.add(new JLabel("Fats (25%):"), gbcKal);
         gbcKal.gridx = 1; caloriesPanel.add(fatsLabel, gbcKal);
-        //END BMR
-        //
+
 
         tabbedPane.addTab("Profile", infoPanel);
         tabbedPane.addTab("Statistics", scrollGraph);
-        //tabbedPane.addTab("Statistics", graphPanel);
         tabbedPane.addTab("BMI", bmiPanel);
         tabbedPane.addTab("Calorie", caloriesPanel);
         tabbedPane.addTab("Home", new JPanel());
 
-        /*tabbedPane.setBackgroundAt(4, new Color(154, 17, 34));
-        tabbedPane.setForegroundAt(4, Color.WHITE);*/
+
         Custom.styleTab(tabbedPane, 4);
 
 
@@ -340,9 +337,7 @@ public class Profile {
             }
         });
 
-        //
 
-        // Listener pro BMI (Index 2)
         tabbedPane.addChangeListener(e -> {
             if (tabbedPane.getSelectedIndex() == 2) {
 
@@ -388,7 +383,7 @@ public class Profile {
         });
 
 
-        //
+
 
         this.frame.setVisible(true);
     }

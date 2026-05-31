@@ -117,8 +117,6 @@ public class Plan {
 
         btnSave.addActionListener(e -> {
             saveToFile();
-            //frame.dispose();
-            //new App().showApp();
         });
         btnHome.addActionListener(e -> {
             this.frame.dispose();

@@ -68,7 +68,6 @@ public class RunPlan {
             labelStatus = new JLabel("Get ready", SwingConstants.CENTER);
             exerciseLabel = new JLabel(planData.get(0)[0], SwingConstants.CENTER);
             timeLabel = new JLabel("0", SwingConstants.CENTER);
-            //labelCas.setFont(new Font("Arial", Font.BOLD, 50));
 
             Custom.exerciseStyle(exerciseLabel);
             Custom.timeStyle(timeLabel);
@@ -138,7 +137,7 @@ public class RunPlan {
             }
 
             labelStatus.setText("Rest time");
-            //labelStatus.setForeground(Color.BLUE);
+
             Custom.stavStyle(labelStatus, Color.BLUE);
         } else {
             isRest = false;
@@ -171,7 +170,7 @@ public class RunPlan {
         }
 
         labelStatus.setText("Work!");
-        //labelStatus.setForeground(Color.RED);
+
         Custom.stavStyle(labelStatus, Color.RED);
     }
 

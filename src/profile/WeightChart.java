@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class WeightChart extends JPanel {
-    //private List<Double> weights;
+
     private List<WeightRecord> weights;
     private int hoveredIndex = -1;
     private double zoomFactor = 1.0;

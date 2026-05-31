@@ -13,13 +13,6 @@
         <maven.compiler.target>23</maven.compiler.target>
     </properties>
 
-    <!-- <dependencies>
-         <dependency>
-             <groupId>pl.coderion</groupId>
-             <artifactId>openfoodfacts-java-wrapper</artifactId>
-             <version>0.9.3</version>
-         </dependency>
-     </dependencies> -->
     <dependencies>
         <dependency>
             <groupId>pl.coderion</groupId>

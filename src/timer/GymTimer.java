@@ -48,37 +48,31 @@ public class GymTimer {
         JButton btnAdd30 = new JButton("+30s");
         JButton btnAdd60 = new JButton("+1m");
         JButton btnAdd600 = new JButton("+10m");
-        //JButton btnClear = new JButton("Clear");
 
         btnAdd05.addActionListener(e -> addTime(5));
         btnAdd30.addActionListener(e -> addTime(30));
         btnAdd60.addActionListener(e -> addTime(60));
         btnAdd600.addActionListener(e -> addTime(600));
-        //btnClear.addActionListener(e -> resetTimer());
 
         pnlQuickSet.add(btnAdd05);
         pnlQuickSet.add(btnAdd30);
         pnlQuickSet.add(btnAdd60);
         pnlQuickSet.add(btnAdd600);
-        //pnlQuickSet.add(btnClear);
 
         Custom.startButton(btnAdd05);
         Custom.startButton(btnAdd30);
         Custom.startButton(btnAdd60);
         Custom.startButton(btnAdd600);
-        //Custom.startButton(btnClear);
         this.frame.add(pnlQuickSet, BorderLayout.NORTH);
 
         JPanel pnlControls = new JPanel(new GridLayout(1, 2, 5, 5));
         pnlControls.setOpaque(false);
         btnStart = new JButton("START");
-        //JButton btnStop = new JButton("STOP");
         JButton btnClear = new JButton("ClEAR");
         JButton btnBack = new JButton("HOME");
 
         btnClear.addActionListener(e -> resetTimer());
         btnStart.addActionListener(e -> toggleTimer());
-        //btnStop.addActionListener(e -> stopTimer());
 
         btnBack.addActionListener(e -> {
             this.frame.dispose();
@@ -88,12 +82,10 @@ public class GymTimer {
 
         pnlControls.add(btnStart);
         pnlControls.add(btnClear);
-        //pnlControls.add(btnStop);
         pnlControls.add(btnBack);
         this.frame.add(pnlControls, BorderLayout.SOUTH);
         Custom.startButton(btnStart);
         Custom.startButton(btnClear);
-        //Custom.startButton(btnStop);
         Custom.startButton(btnBack);
 
         this.frame.setVisible(true);

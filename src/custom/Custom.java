@@ -44,7 +44,7 @@ public class Custom {
         label.setFont(new Font("Arial", Font.BOLD, 40));
         label.setForeground(barvaTextu);
     }
-    //
+
     public static void bmiNumberStyle(JLabel label) {
         label.setFont(new Font("Arial", Font.BOLD, 60));
     }
@@ -60,33 +60,23 @@ public class Custom {
 
     public static void calorieNumberStyle(JLabel label) {
         label.setFont(new Font("Arial", Font.BOLD, 45));
-        label.setForeground(new Color(154, 17, 34)); // Tmavě červená
+        label.setForeground(new Color(154, 17, 34));
     }
 
     public static void macroStyle(JLabel label, String type) {
         label.setFont(new Font("Arial", Font.BOLD, 16));
         switch (type.toLowerCase()) {
             case "protein":
-                label.setForeground(new Color(70, 130, 180)); // Modrá
+                label.setForeground(new Color(70, 130, 180));
                 break;
             case "carbs":
-                label.setForeground(new Color(218, 165, 32)); // Zlatá/Žlutá
+                label.setForeground(new Color(218, 165, 32));
                 break;
             case "fats":
-                label.setForeground(new Color(46, 139, 87));  // Zelená
+                label.setForeground(new Color(46, 139, 87));
                 break;
         }
     }
-    /*public static Color getBmiColor(String status) {
-        if (status == null) return Color.BLACK;
-        switch (status) {
-            case "Normal": return new Color(34, 139, 34);
-            case "Underweight": return new Color(255, 140, 0);
-            case "Overweight": return new Color(255, 69, 0);
-            case "Obesity": return Color.RED;
-            default: return Color.BLACK;
-        }
-    }*/
 
     public static void styleTab(JTabbedPane tabbedPane, int tabIndex) {
         tabbedPane.setBackgroundAt(tabIndex, new Color(154, 17, 34));
