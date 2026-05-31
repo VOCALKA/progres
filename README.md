@@ -10,8 +10,7 @@ The application utilizes the Swing graphical user interface, saves data to text 
     *   **Input Protection**: Time input fields strictly accept numbers only.
     *   **List Management**: Quick removal of an unwanted exercise from the list via a **double-click**.
     *   **Empty Data Protection**: The program prevents saving an empty plan without any exercises.
-    *   Automatic saving to semicolon-separated text files (CSV style) inside the `resources` folder (including protection against overwriting an existing file by appending a number).
-
+    *   
 *   **Workout Execution (`RunPlan.java`)**:
     *   Loads a saved plan from the `resources` folder using a file chooser dialog (`JFileChooser`).
     *   **Clear UI**: Large fonts for the countdown timer and clearly color-coded states (**WORK!** / **REST**).
