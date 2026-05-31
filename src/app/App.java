@@ -58,6 +58,8 @@ public class App {
         JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
         buttonPanel.setOpaque(false);
 
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+
         RoundedButton button = new RoundedButton("PROFILE");
         Custom.startButton(button);
 

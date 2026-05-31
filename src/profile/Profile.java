@@ -285,7 +285,7 @@ public class Profile {
 
         this.frame.add(tabbedPane, BorderLayout.CENTER);
 
-        RoundedButton saveBtn = new RoundedButton("SAVE PROFILE");
+        JButton saveBtn = new JButton("SAVE PROFILE");
         Custom.startButton(saveBtn);
         this.frame.add(saveBtn, BorderLayout.SOUTH);
 
@@ -296,6 +296,7 @@ public class Profile {
             String gender = male.isSelected() ? "Male" : (female.isSelected() ? "Female" : "Not entered");
             int weight = weightSlider.getValue();
             String todaysDate = java.time.LocalDate.now().toString();
+            UIManager.put("Button.focus", new javax.swing.plaf.ColorUIResource(new Color(0, 0, 0, 0)));
 
             try {
                 try (java.io.FileWriter fw = new java.io.FileWriter("profil.txt")) {

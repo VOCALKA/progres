@@ -37,9 +37,16 @@ public class TitleScreen {
         Custom.startText(label);
         this.frame.add(label, BorderLayout.CENTER);
 
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 1));
+        buttonPanel.setOpaque(false);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+
+
         RoundedButton button = new RoundedButton("LOG IN");
         Custom.startButton(button);
-        this.frame.add(button, BorderLayout.SOUTH);
+
+        buttonPanel.add(button);
+        this.frame.add(buttonPanel, BorderLayout.SOUTH);
 
         button.addActionListener(e -> {
             this.frame.dispose();

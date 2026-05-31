@@ -73,7 +73,7 @@ public class CalorieTracker {
         JPanel pnlCenter = new JPanel(new BorderLayout(10, 10));
         pnlCenter.setOpaque(false);
 
-        lblResult = new JLabel("Scan barcode and enter weight", SwingConstants.CENTER);
+        lblResult = new JLabel("Enter barcode and product weight", SwingConstants.CENTER);
         lblResult.setFont(new Font("Monospaced", Font.BOLD, 18));
         pnlCenter.add(lblResult, BorderLayout.NORTH);
 
@@ -101,7 +101,7 @@ public class CalorieTracker {
 
         JPanel pnlControls = new JPanel(new GridLayout(1, 1, 5, 5));
         pnlControls.setOpaque(false);
-        btnBack = new JButton("BACK");
+        btnBack = new JButton("HOME");
         Custom.startButton(btnBack);
 
         pnlControls.add(btnBack);

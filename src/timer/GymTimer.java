@@ -43,6 +43,7 @@ public class GymTimer {
         this.frame.add(labelDisplay, BorderLayout.CENTER);
 
         JPanel pnlQuickSet = new JPanel(new GridLayout(1, 3, 5, 5));
+        pnlQuickSet.setOpaque(false);
         JButton btnAdd05 = new JButton("+5s");
         JButton btnAdd30 = new JButton("+30s");
         JButton btnAdd60 = new JButton("+1m");
@@ -69,10 +70,11 @@ public class GymTimer {
         this.frame.add(pnlQuickSet, BorderLayout.NORTH);
 
         JPanel pnlControls = new JPanel(new GridLayout(1, 2, 5, 5));
+        pnlControls.setOpaque(false);
         btnStart = new JButton("START");
         //JButton btnStop = new JButton("STOP");
-        JButton btnClear = new JButton("Clear");
-        JButton btnBack = new JButton("BACK");
+        JButton btnClear = new JButton("ClEAR");
+        JButton btnBack = new JButton("HOME");
 
         btnClear.addActionListener(e -> resetTimer());
         btnStart.addActionListener(e -> toggleTimer());

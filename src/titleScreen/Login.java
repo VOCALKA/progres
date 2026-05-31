@@ -1,6 +1,7 @@
 package titleScreen;
 
 import app.App;
+import custom.Custom;
 
 
 import javax.swing.*;
@@ -22,7 +23,11 @@ public class Login extends JFrame {
         super("LOGIN");
 
 
+        Custom.background(this);
+
         JPanel newPanel = new JPanel(new GridBagLayout());
+
+        newPanel.setOpaque(false);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
@@ -48,6 +53,10 @@ public class Login extends JFrame {
         constraints.gridwidth = 2;
         constraints.anchor = GridBagConstraints.CENTER;
         newPanel.add(buttonLogin, constraints);
+
+        custom.Custom.startButton(buttonLogin);
+
+        buttonLogin.setFocusPainted(false);
 
         buttonLogin.addActionListener(e -> {
             String username = textUsername.getText();
